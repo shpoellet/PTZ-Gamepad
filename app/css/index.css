@@ -1,0 +1,308 @@
+body {
+  background-color: black;
+  font-family: Arial, Helvetica, sans-serif;
+  color: white;
+}
+
+
+.bottom_left_label{
+  position: absolute;
+  left: 0px;
+  bottom: 0px;
+  font-size: 10pt;
+  color: white;
+}
+
+.pane_label{
+  position: absolute;
+  left: 2px;
+  top: 2px;
+  font-size: 15pt;
+  color: white;
+}
+
+.pane{
+  background-color: #151515;
+  border-style: solid;
+  border-width: 1px;
+  border-color: white;
+}
+
+
+
+#CAMERA_SELECT_PANE{
+  /* background-color: red; */
+  position: fixed;
+  left: 10px;
+  top: 10px;
+  width: 685px;
+  height: 110px;
+}
+
+.camera_select_button{
+  background-color: #505050;
+  width: 76px;
+  height: 76px;
+  float: left;
+  margin-left: 5px;
+  margin-top: 25px;
+  text-align: center;
+  line-height: 80px;
+  font-size: 25pt;
+  cursor: pointer;
+  border-style: solid;
+  border-width: 2px;
+  border-color: #C0392B;
+}
+
+.camera_select_button:hover{
+  background-color: #909090;
+}
+
+#CAMERA_SELECT_0{
+  border-color: #F4D03F;
+  background-color: #27AE60;
+}
+
+#PTZ_PANE{
+  /* background-color: red; */
+  position: fixed;
+  left: 10px;
+  top: 132px;
+  width: 300px;
+  height: 280px;
+}
+
+#PT_GRID{
+  background-color: #303030;
+  position: absolute;
+  left: 5px;
+  top: 25px;
+  width: 200px;
+  height: 200px;
+}
+
+#PT_Y-AXIS{
+  background-color: white;
+  position: absolute;
+  left: 50%;
+  top: 0px;
+  width: 2px;
+  height: 100%;
+  margin-left: -1px;
+}
+
+#PT_X-AXIS{
+  background-color: white;
+  position: absolute;
+  top: 50%;
+  left: 0px;
+  height: 2px;
+  width: 100%;
+  margin-top: -1px;
+}
+
+#PT_DOT{
+  background-color: white;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  margin-left: -8px;
+  margin-top: -8px;
+}
+
+#ZOOM_GRID{
+  background-color: #303030;
+  position: absolute;
+  left: 215px;
+  top: 25px;
+  width: 80px;
+  height: 200px;
+}
+
+#ZOOM_X-AXIS{
+  background-color: white;
+  position: absolute;
+  top: 50%;
+  left: 0px;
+  height: 2px;
+  width: 100%;
+  margin-top: -1px;
+}
+
+#ZOOM_DOT{
+  background-color: white;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  margin-left: -8px;
+  margin-top: -8px;
+}
+
+#PT_SPEED_CONTAINER {
+  /* background-color: green; */
+  width: 200px;
+  height: 40px;
+  position: absolute;
+  top: 235px;
+  left: 5px;/* Width of the outside container */
+}
+
+#ZOOM_SPEED_CONTAINER {
+  /* background-color: green; */
+  width: 80px;
+  height: 40px;
+  position: absolute;
+  top: 235px;
+  left: 215px;/* Width of the outside container */
+}
+
+/* The slider itself */
+.slider {
+  -webkit-appearance: none;  /* Override default CSS styles */
+  appearance: none;
+  width: 100%; /* Full-width */
+  height: 25px; /* Specified height */
+  background: #d3d3d3; /* Grey background */
+  outline: none; /* Remove outline */
+  opacity: 0.7; /* Set transparency (for mouse-over effects on hover) */
+  -webkit-transition: .2s; /* 0.2 seconds transition on hover */
+  transition: opacity .2s;
+  margin: 0px;
+}
+
+/* Mouse-over effects */
+.slider:hover {
+  opacity: 1; /* Fully shown on mouse-over */
+}
+
+/* The slider handle (use -webkit- (Chrome, Opera, Safari, Edge) and -moz- (Firefox) to override default look) */
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none; /* Override default look */
+  appearance: none;
+  width: 15px; /* Set a specific slider handle width */
+  height: 25px; /* Slider handle height */
+  background: #606060; /* Green background */
+  cursor: pointer; /* Cursor on hover */
+}
+
+#FOCUS_PANE{
+  /* background-color: red; */
+  position: fixed;
+  left: 10px;
+  top: 422px;
+  width: 300px;
+  height: 80px;
+}
+
+.focus_button{
+  background-color: #505050;
+  text-align: center;
+  line-height: 50px;
+  font-size: 18pt;
+  cursor: pointer;
+  height: 46px;
+  width: 65px;
+  float: left;
+  margin-left: 5px;
+  position: relative;
+  top: 25px;
+  border-style: solid;
+  border-width: 2px;
+  border-color: #505050;
+}
+
+.focus_button:hover{
+  background-color: #909090;
+}
+
+.mf_buttons{
+  background-color: #505050;
+  text-align: center;
+  line-height: 22px;
+  font-size: 18pt;
+  cursor: pointer;
+  height: 22px;
+  width: 69px;
+  float: left;
+  margin-left: 5px;
+  margin-top: 6px;
+  position: relative;
+  top: 19px;
+}
+
+.mf_buttons:hover{
+  background-color: #909090;
+}
+
+#PRESET_PANE{
+  /* background-color: red; */
+  position: fixed;
+  left: 320px;
+  top: 132px;
+  width: 375px;
+  height: 520px;
+}
+
+.preset_button{
+  background-color: #505050;
+  text-align: center;
+  line-height: 50px;
+  font-size: 25pt;
+  cursor: pointer;
+  height: 50px;
+}
+
+.preset_select_button{
+  position: relative;
+  top: 20px;
+  left: 1px;
+  background-color: #505050;
+  width: 83px;
+  height: 46px;
+  float: left;
+  margin-left: 5px;
+  margin-top: 5px;
+  border-style: solid;
+  border-width: 2px;
+  border-color: #505050;
+  /* border-color: #CD6155; */
+}
+
+.preset_button:hover{
+  background-color: #909090;
+}
+
+#PRESET_RECORD_BUTTON{
+  position: absolute;
+  bottom: 5px;
+  right: 6px;
+  width: 179px;
+  background-color: #CD6155;
+}
+
+#PRESET_RECORD_BUTTON:hover{
+  background-color: #F1948A;
+}
+
+#SETTINGS_GEAR{
+  background-image: url("../graphics/gear-40x40.png");
+  /* background-color: red; */
+  width:40px;
+  height: 40px;
+  position: fixed;
+  left: 10px;
+  bottom: 10px;
+  cursor: pointer;
+
+}
+
+#SETTINGS_GEAR:hover{
+    transform: rotate(22.5deg);
+}

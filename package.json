@@ -1,0 +1,22 @@
+{
+  "name": "PTZ-Gamepad",
+  "version": "1.0.0",
+  "description": "PTZ Camera Controller using gamepads",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "repository": "",
+  "keywords": [
+    "Electron",
+    "quick",
+    "start",
+    "tutorial",
+    "demo"
+  ],
+  "author": "GitHub",
+  "license": "CC0-1.0",
+  "devDependencies": {
+    "electron": "^8.2.0"
+  }
+}
