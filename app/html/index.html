@@ -3,8 +3,8 @@
   <head>
     <meta charset="UTF-8">
     <!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP -->
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'">
-    <meta http-equiv="X-Content-Security-Policy" content="default-src 'self'; script-src 'self'">
+    <!-- <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'">
+    <meta http-equiv="X-Content-Security-Policy" content="default-src 'self'; script-src 'self'"> -->
 
     <link rel="stylesheet" type="text/css" href="../css/index.css">
 
@@ -18,6 +18,8 @@
 
     </div>
 
+    <div class="mask_pane" id="CAMERA_STATUS_MASK_PANE"></div>
+
     <div class="pane" id="PTZ_PANE">
       <div class="pane_label">Pan Tilt Zoom</div>
       <div id="PT_GRID">
@@ -27,8 +29,7 @@
         <div id="PT_DOT"></div>
       </div>
       <div id="PT_SPEED_CONTAINER">
-        <input type="range" min="1" max="100" v
-        alue="50" class="slider" id="myRange">
+        <input type="range" min="1" max="100" value="50" class="slider" onchange="PTspeedSlider(this.value)">
         <div class="bottom_left_label">Pan/Tilt Speed</div>
       </div>
       <div id=ZOOM_GRID>
@@ -37,28 +38,99 @@
         <div id="ZOOM_DOT"></div>
       </div>
       <div id="ZOOM_SPEED_CONTAINER">
-        <input type="range" min="1" max="100" value="50" class="slider" id="myRange">
+        <input type="range" min="1" max="100" value="50" class="slider" onchange="ZoomSpeedSlider(this.value)">
         <div class="bottom_left_label">Zoom Speed</div>
       </div>
     </div>
 
     <div class="pane" id="FOCUS_PANE">
       <div class="pane_label">Focus</div>
-      <div class="focus_button" id="AF_BUTTON">AF</div>
-      <div class="focus_button" id="OTAF_BUTTON">OTAF</div>
-      <div class="focus_button" id="MF_BUTTON">MF</div>
-      <div class="mf_buttons" id="MF_BUTTON">+</div>
-      <div class="mf_buttons" id="MF_BUTTON">-</div>
+      <div class="focus_button" id="AF_BUTTON" onclick="AutoFocusButton()">AF</div>
+      <div class="focus_button" id="OTAF_BUTTON" onclick="OneTouchButton()">OTAF</div>
+      <div class="focus_button" id="MF_BUTTON" onclick="ManaulFocusButton()">MF</div>
+      <div class="mf_buttons" id="FOCUS+_BUTTON" onclick="FocusButton(true)">+</div>
+      <div class="mf_buttons" id="FOCUS-BUTTON" onclick="FocusButton(false)">-</div>
     </div>
 
     <div class="pane" id="PRESET_PANE">
       <div class="pane_label">Presets</div>
       <div id="PRESET_BUTTONS"></div>
       <!-- <div class="preset_button preset_select_button" id="PRESET_SELECT_0">1</div> -->
-      <div class="preset_button" id="PRESET_RECORD_BUTTON">RECORD</div>
+      <div class="preset_button" id="PRESET_RECORD_BUTTON" onclick="RecordButton()">RECORD</div>
     </div>
 
     <div id="SETTINGS_GEAR"></div>
+
+    <div class="mask_pane" id="SETTINGS_MASK_PANE"></div>
+
+    <div class="pane" id="SETTINGS_PANE">
+      <div class="pane_label">Settings</div>
+      <div class="settings_grid" id="SETTINGS_GRID">
+        <div class="settings_grid_title" id="SETTINGS_CAMERA_TITLE">Camera</div>
+        <div class="settings_grid_title" id="SETTINGS_ACTIVE_TITLE">Enabled</div>
+        <div class="settings_grid_title" id="SETTINGS_ADDRESS_TITLE">Address</div>
+        <div class="settings_grid_title" id="SETTINGS_PORT_TITLE">Port</div>
+
+        <div class="settings_camera_number">1</div>
+        <div class="settings_checkbox">
+          <input type="checkbox"  id="SETTINGS_CAMERA_ENABLED_0">
+        </div>
+        <input type="text" id="SETTINGS_CAMERA_ADDRESS_0">
+        <input type="text" id="SETTINGS_CAMERA_PORT_0">
+
+        <div class="settings_camera_number">2</div>
+        <div class="settings_checkbox">
+          <input type="checkbox"  id="SETTINGS_CAMERA_ENABLED_1">
+        </div>
+        <input type="text" id="SETTINGS_CAMERA_ADDRESS_1">
+        <input type="text" id="SETTINGS_CAMERA_PORT_1">
+
+        <div class="settings_camera_number">3</div>
+        <div class="settings_checkbox">
+          <input type="checkbox"  id="SETTINGS_CAMERA_ENABLED_2">
+        </div>
+        <input type="text" id="SETTINGS_CAMERA_ADDRESS_2">
+        <input type="text" id="SETTINGS_CAMERA_PORT_2">
+
+        <div class="settings_camera_number">4</div>
+        <div class="settings_checkbox">
+          <input type="checkbox"  id="SETTINGS_CAMERA_ENABLED_3">
+        </div>
+        <input type="text" id="SETTINGS_CAMERA_ADDRESS_3">
+        <input type="text" id="SETTINGS_CAMERA_PORT_3">
+
+        <div class="settings_camera_number">5</div>
+        <div class="settings_checkbox">
+          <input type="checkbox"  id="SETTINGS_CAMERA_ENABLED_4">
+        </div>
+        <input type="text" id="SETTINGS_CAMERA_ADDRESS_4">
+        <input type="text" id="SETTINGS_CAMERA_PORT_4">
+
+        <div class="settings_camera_number">6</div>
+        <div class="settings_checkbox">
+          <input type="checkbox"  id="SETTINGS_CAMERA_ENABLED_5">
+        </div>
+        <input type="text" id="SETTINGS_CAMERA_ADDRESS_5">
+        <input type="text" id="SETTINGS_CAMERA_PORT_5">
+
+        <div class="settings_camera_number">7</div>
+        <div class="settings_checkbox">
+          <input type="checkbox"  id="SETTINGS_CAMERA_ENABLED_6">
+        </div>
+        <input type="text" id="SETTINGS_CAMERA_ADDRESS_6">
+        <input type="text" id="SETTINGS_CAMERA_PORT_6">
+
+        <div class="settings_camera_number">8</div>
+        <div class="settings_checkbox">
+          <input type="checkbox"  id="SETTINGS_CAMERA_ENABLED_7">
+        </div>
+        <input type="text" id="SETTINGS_CAMERA_ADDRESS_7">
+        <input type="text" id="SETTINGS_CAMERA_PORT_7">
+
+
+
+      </div>
+      <div id="SETTINGS_CLOSE_BUTTON"  onclick="saveSettings()">X</div>
 
     <!-- You can also require other files to run in this process -->
     <script src="../js/index.js"></script>

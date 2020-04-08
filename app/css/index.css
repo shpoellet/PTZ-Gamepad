@@ -21,14 +21,37 @@ body {
   color: white;
 }
 
+
+.mask_pane{
+  background-color: #505050;
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  left: 0px;
+  top: 0px;
+  opacity: 0.9;
+  display: none;
+}
+
+#CAMERA_STATUS_MASK_PANE{
+  z-index: 5;
+  margin-top: 127px;
+  /* display: block; */
+  font-size: 20pt;
+  text-align: center;
+  padding-top: 50px;
+}
+
+#SETTINGS_MASK_PANE{
+  z-index: 20;
+}
+
 .pane{
   background-color: #151515;
   border-style: solid;
   border-width: 1px;
   border-color: white;
 }
-
-
 
 #CAMERA_SELECT_PANE{
   /* background-color: red; */
@@ -37,6 +60,7 @@ body {
   top: 10px;
   width: 685px;
   height: 110px;
+  z-index: 10;
 }
 
 .camera_select_button{
@@ -52,17 +76,17 @@ body {
   cursor: pointer;
   border-style: solid;
   border-width: 2px;
-  border-color: #C0392B;
+  border-color: grey;
 }
 
 .camera_select_button:hover{
   background-color: #909090;
 }
 
-#CAMERA_SELECT_0{
+/* #CAMERA_SELECT_0{
   border-color: #F4D03F;
   background-color: #27AE60;
-}
+} */
 
 #PTZ_PANE{
   /* background-color: red; */
@@ -71,6 +95,7 @@ body {
   top: 132px;
   width: 300px;
   height: 280px;
+  z-index: 0;
 }
 
 #PT_GRID{
@@ -199,6 +224,7 @@ body {
   top: 422px;
   width: 300px;
   height: 80px;
+  z-index: 0;
 }
 
 .focus_button{
@@ -248,6 +274,7 @@ body {
   top: 132px;
   width: 375px;
   height: 520px;
+  z-index: 0;
 }
 
 .preset_button{
@@ -300,9 +327,62 @@ body {
   left: 10px;
   bottom: 10px;
   cursor: pointer;
-
+  z-index: 15;
 }
 
 #SETTINGS_GEAR:hover{
     transform: rotate(22.5deg);
+}
+
+#SETTINGS_PANE{
+  position: fixed;
+  width: 685px;
+  height: 643px;
+  left: 10px;
+  top: 10px;
+  z-index: 25;
+  display: none;
+}
+
+.settings_grid{
+  display: grid;
+  grid-template-columns: 65px 60px 225px 75px;
+  position: absolute;
+  top: 30px;
+  grid-gap: 2px;
+}
+
+.settings_grid_title{
+  text-align: center;
+  height: 18px;
+  line-height: 18px;
+}
+
+.settings_camera_number{
+  text-align: center;
+  height: 24px;
+  line-height: 24px;
+}
+
+.settings_checkbox{
+  text-align: center;
+  line-height: 24px;
+}
+
+#SETTINGS_CLOSE_BUTTON{
+  position: absolute;
+  right: 5px;
+  top: 5px;
+  width: 20px;
+  height: 20px;
+  border-style: solid;
+  border-width: 1px;
+  border-color: white;
+  text-align: center;
+  line-height: 20px;
+  cursor: pointer;
+}
+
+#SETTINGS_CLOSE_BUTTON:hover{
+  background-color: #505050;
 }

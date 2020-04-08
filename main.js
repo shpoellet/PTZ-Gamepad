@@ -1,15 +1,17 @@
 // Modules to control application life and create native browser window
 const {app, BrowserWindow} = require('electron')
-const path = require('path')
-
+// const path = require('path')
+let mainWindow;
 function createWindow () {
   // Create the browser window.
-  const mainWindow = new BrowserWindow({
+  mainWindow = new BrowserWindow({
     width: 720,
     height: 720,
     webPreferences: {
-      preload: path.join(__dirname, 'preload.js')
-    }
+    nodeIntegration: true,
+    nodeIntegrationInWorker: true
+  },
+    show: false
   })
 
   // and load the index.html of the app.
@@ -17,6 +19,15 @@ function createWindow () {
 
   // Open the DevTools.
   // mainWindow.webContents.openDevTools()
+
+
+  mainWindow.once('ready-to-show', function (){
+    mainWindow.show();
+    runMain();
+  })
+
+
+    // Menu.setApplicationMenu(null);
 }
 
 // This method will be called when Electron has finished
@@ -40,3 +51,9 @@ app.on('activate', function () {
 
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and require them here.
+
+function runMain(){
+  	console.log("start");
+  	var PTZ_Gamepad = require('./app/js/PTZ-Gamepad.js');
+    PTZ_Gamepad.init(mainWindow);
+  }
