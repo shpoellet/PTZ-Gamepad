@@ -10,8 +10,9 @@
 
 module.exports = class Camera {
   constructor(){
-    this.enabled = true;
-    this.connected = true;
+    this.enabled = false;
+    this.connected = false;
+    this.connectCount = 0;
     this.address = 'pac001-gateway.gbpac.uni.edu';
     this.port = 82;
 

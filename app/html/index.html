@@ -48,8 +48,8 @@
       <div class="focus_button" id="AF_BUTTON" onclick="AutoFocusButton()">AF</div>
       <div class="focus_button" id="OTAF_BUTTON" onclick="OneTouchButton()">OTAF</div>
       <div class="focus_button" id="MF_BUTTON" onclick="ManaulFocusButton()">MF</div>
-      <div class="mf_buttons" id="FOCUS+_BUTTON" onclick="FocusButton(true)">+</div>
-      <div class="mf_buttons" id="FOCUS-BUTTON" onclick="FocusButton(false)">-</div>
+      <div class="mf_buttons" id="FOCUS+_BUTTON" onMouseDown="FocusButton('near')" onMouseUp="FocusButton('stop')">NEAR</div>
+      <div class="mf_buttons" id="FOCUS-BUTTON" onMouseDown="FocusButton('far')" onMouseUp="FocusButton('stop')">FAR</div>
     </div>
 
     <div class="pane" id="PRESET_PANE">

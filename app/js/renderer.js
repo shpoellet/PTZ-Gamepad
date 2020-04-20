@@ -2,7 +2,6 @@ const {ipcRenderer} = require('electron');
 
 require("../js/gamecontroller.js");
 // https://www.npmjs.com/package/gamecontroller.js
-
 //Local Varialbes
 var recordMode = false;
 var selectedCamera = 0;
@@ -11,7 +10,8 @@ var pan = 0;
 var tilt = 0;
 var zoom = 0;
 
-var axeSwap = true;
+var axeSwap = false;
+var invertTilt = false;
 
 //local functions
 
@@ -156,23 +156,23 @@ ipcRenderer.on('selectCamera', function(event, index, cameraValues){
   setSelectedCamera(index, cameraValues);
 })
 
-ipcRenderer.on('PTdisplay', function(event, x, y){
-  //input vales will be +-100
-  xPos = 50 + ((x/100)*50);
-  yPos = 50 - ((y/100)*50);
-  document.getElementById("PT_DOT").style.left=xPos+'%';
-  document.getElementById("PT_DOT").style.top=yPos+'%';
+ipcRenderer.on('connectCamera', function(event, index, cameraValues){
+  displayCameraStatus(index, cameraValues.enabled, cameraValues.connected);
+  if(index == selectedCamera){
+    setSelectedCamera(index, cameraValues);
+  }
 })
 
-ipcRenderer.on('ZoomDisplay', function(event, value){
-  //input vales will be +-100
-  yPos = 50 - ((value/100)*50);
-  document.getElementById("ZOOM_DOT").style.top=yPos+'%';
+ipcRenderer.on('displayLiveValues', function(event, liveValues){
+  displayCameraValues(liveValues);
 })
+
+
 
 // Button Clicks
 
 function CameraSelectButton(index){
+  if(recordMode){setRecordMode(false);}
   ipcRenderer.send('selectCamera', index);
 }
 
@@ -241,10 +241,11 @@ function GP_Axes(index, axeValues){
   let axe = index;
   if(axeSwap){axe = index == 0 ? 1 : 0;}
 
-  if(axe == 0){
+  if(axe == 1){
     // Pan Tilt values
     let x = Math.abs(axeValues[0]) > threshold ? Math.round(axeValues[0]*100) : 0;
     let y = Math.abs(axeValues[1]) > threshold ? Math.round(axeValues[1]*-100) : 0;
+    if(invertTilt){y=y*-1};
     processPT(x,y);
   } else{
     let y = Math.abs(axeValues[1]) > threshold ? Math.round(axeValues[1]*-100) : 0;
