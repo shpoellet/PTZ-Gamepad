@@ -1,8 +1,6 @@
 const {ipcRenderer} = require('electron');
 
-// require("../js/gamecontroller.js");
-
-const Gamepad = require("../js/gamepad-interface.js");
+require("../js/gamecontroller.js");
 // https://www.npmjs.com/package/gamecontroller.js
 //Local Varialbes
 var recordMode = false;
@@ -67,7 +65,6 @@ function displayCameraValues(liveValues){
 }
 
 function setSelectedCamera(index, cameraValues){
-  if(recordMode){setRecordMode(false);}
   selectedCamera = index;
   displaySelectedCamera(index);
   if(!cameraValues.enabled){
@@ -78,7 +75,6 @@ function setSelectedCamera(index, cameraValues){
     displayCameraValues(cameraValues.liveValues);
   }
 }
-
 
 function saveSettings(){
   var newValues = [];
@@ -91,20 +87,6 @@ function saveSettings(){
   }
   ipcRenderer.send('saveSettings', newValues);
   closeSettingsPane();
-}
-
-
-function saveMap(){
-  // var newValues = [];
-  // for (var i = 0; i < 8; i++) {
-  //   newValues[i] = {
-  //     enabled : document.getElementById("SETTINGS_CAMERA_ENABLED_"+i).checked,
-  //     address : document.getElementById("SETTINGS_CAMERA_ADDRESS_"+i).value,
-  //     port : document.getElementById("SETTINGS_CAMERA_PORT_"+i).value
-  //   }
-  // }
-  // ipcRenderer.send('saveSettings', newValues);
-  closeMapPane();
 }
 
 function setRecordMode(state){
@@ -125,7 +107,24 @@ function setRecordMode(state){
 }
 
 
+//PTZ functions
 
+function processPT(x, y){
+  if(pan!=x || tilt!=y){
+    pan = x;
+    tilt = y;
+    drawPT();
+    ipcRenderer.send('PanTilt', pan, tilt);
+  }
+}
+
+function processZoom(y){
+  if(zoom!=y){
+    zoom = y;
+    drawZoom();
+    ipcRenderer.send('Zoom', zoom);
+  }
+}
 
 //PT Display functions
 function drawPT(){
@@ -138,48 +137,6 @@ function drawPT(){
 function drawZoom(){
   let yPos = 50 - ((zoom/100)*50);
   document.getElementById("ZOOM_DOT").style.top=yPos+'%';
-}
-
-
-//flash buttons
-function blinkPreset(index){
-  document.getElementById("PRESET_SELECT_"+index).style.backgroundColor = '#909090';
-  setTimeout(function(){
-    document.getElementById("PRESET_SELECT_"+index).style.backgroundColor = '';},250);
-}
-
-function blinkMF(){
-  document.getElementById("MF_BUTTON").style.backgroundColor = '#909090';
-  setTimeout(function(){
-    document.getElementById("MF_BUTTON").style.backgroundColor = '';},250);
-}
-
-function blinkAF(){
-  document.getElementById("AF_BUTTON").style.backgroundColor = '#909090';
-  setTimeout(function(){
-    document.getElementById("AF_BUTTON").style.backgroundColor = '';},250);
-}
-
-function blinkOTAF(index){
-  document.getElementById("OTAF_BUTTON").style.backgroundColor = '#909090';
-  setTimeout(function(){
-    document.getElementById("OTAF_BUTTON").style.backgroundColor = '';},250);
-}
-
-function blinkMFnear(state){
-  if(state){
-    document.getElementById("FOCUS-BUTTON").style.backgroundColor = '#909090';
-  } else{
-    document.getElementById("FOCUS-BUTTON").style.backgroundColor = '';
-  }
-}
-
-function blinkMFfar(state){
-  if(state){
-    document.getElementById("FOCUS+BUTTON").style.backgroundColor = '#909090';
-  } else{
-    document.getElementById("FOCUS+BUTTON").style.backgroundColor = '';
-  }
 }
 
 
@@ -210,32 +167,12 @@ ipcRenderer.on('displayLiveValues', function(event, liveValues){
   displayCameraValues(liveValues);
 })
 
-ipcRenderer.on('drawPT', function(event, values){
-  pan = values[0];
-  tilt = values[1];
-  drawPT();
-})
 
-ipcRenderer.on('drawZoom', function(event, value){
-  zoom = value;
-  drawZoom();
-})
-
-ipcRenderer.on('blinkPreset', function(event, index){blinkPreset(index);});
-
-ipcRenderer.on('blinkAF', blinkAF);
-
-ipcRenderer.on('blinkMF', blinkMF);
-
-ipcRenderer.on('blinkMFnear', function(event, value){blinkMFnear(value);});
-
-ipcRenderer.on('blinkMFfar', function(event, value){blinkMFfar(value);});
-
-ipcRenderer.on('blinkOTAF', blinkOTAF);
 
 // Button Clicks
 
 function CameraSelectButton(index){
+  if(recordMode){setRecordMode(false);}
   ipcRenderer.send('selectCamera', index);
 }
 
@@ -286,15 +223,79 @@ function ZoomSpeedSlider(value){
 
 
 
-//Gamepad functions
+//gamepad
+function GP_ButtonPressed(index){
+  console.log("button "+index);
+  switch(index){
+    case 11: document.getElementById('button-4').classList.toggle('active', true);
+    case 14: ipcRenderer.send('selectCamera', 0);break;
+    case 12: ipcRenderer.send('selectCamera', 1);break;
+    case 15: ipcRenderer.send('selectCamera', 2);break;
+    case 13: ipcRenderer.send('selectCamera', 3);break;
+  }
 
-function AxeAction(index, values){
-  ipcRenderer.send('AxeAction', index, values);
 }
 
-function ButtonAction(index, value){
-  ipcRenderer.send('ButtonAction', index, value);
+function GP_ButtonReleased(index){
+  console.log("button "+index);
+  switch(index){
+    case 11: document.getElementById('button-4').classList.toggle('active', false);
+    case 14: ipcRenderer.send('selectCamera', 0);break;
+    case 12: ipcRenderer.send('selectCamera', 1);break;
+    case 15: ipcRenderer.send('selectCamera', 2);break;
+    case 13: ipcRenderer.send('selectCamera', 3);break;
+  }
+
 }
 
+function GP_Axes(index, axeValues){
+  let threshold = 0.01;
+  let axe = index;
+  if(axeSwap){axe = index == 0 ? 1 : 0;}
 
-Gamepad.init(AxeAction, ButtonAction);
+  if(axe == 1){
+    // Pan Tilt values
+    let x = Math.abs(axeValues[0]) > threshold ? Math.round(axeValues[0]*100) : 0;
+    let y = Math.abs(axeValues[1]) > threshold ? Math.round(axeValues[1]*-100) : 0;
+    if(invertTilt){y=y*-1};
+    processPT(x,y);
+  } else{
+    let y = Math.abs(axeValues[1]) > threshold ? Math.round(axeValues[1]*-100) : 0;
+    processZoom(y);
+  }
+
+
+
+}
+
+gameControl
+  .on('connect', function(gp){
+    for (let i = 0; i < Math.min(17, gp.buttons); i++) {
+      gp.before('button' + i, function(){
+        GP_ButtonPressed(i);
+      });
+      gp.after('button' + i, function(){
+        GP_ButtonReleased(i);
+      });
+    }
+
+  })
+  .on('afterCycle', function(){
+    GP_Axes(0, gameControl.getGamepad(0).axeValues[0]);
+    GP_Axes(1, gameControl.getGamepad(0).axeValues[1]);
+  })
+  .on('beforeCycle', function(){
+
+  });
+
+
+
+
+// gamepad.on('button0',     () => {
+//
+//    console.log('Button 0 still pressed...');
+//    console.log(gameControl.getGamepad(0).axeValues[0]);
+//
+//
+//  })
+// });/

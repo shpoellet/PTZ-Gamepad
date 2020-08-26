@@ -1,6 +1,6 @@
 //Camera.js
 //
-//Defines the class Camear
+//Defines the class Camera
 //
 //Last Edited By: Shawn Poellet 4-7-2019
 

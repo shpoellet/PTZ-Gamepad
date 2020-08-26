@@ -7,6 +7,8 @@ const http = require('http');
 
 const Camera = require('./Camera.js');
 
+const Gamepad = require('./Gamepad.js');
+
 var cameraCount = 8;
 
 var Cameras = [];
@@ -25,8 +27,9 @@ var ZoomSpeed = 50;
 
 var packetCount = 1;
 
-
+//-----------------------------------------------------------------------------
 //private funcitons
+
 function selectCamera(index){
   processPT(0,0);
   processZoom(0);
@@ -44,46 +47,52 @@ function setConnectState(index, state){
 
 
 function recallPreset(index){
+  if(!Cameras[selectedCamera].connected){return;};
   let command = 'http://'+
                 Cameras[selectedCamera].address + ':' +
                 Cameras[selectedCamera].port + '/cgi-bin/aw_ptz?cmd=%23R';
   if(index < 10){command = command + 0}
   command = command + index + '&res=1';
-  http.get(command);
+  http.get(command).on("error", (err)=>{console.log(err.message)});;
 }
 
 function storePreset(index){
+  if(!Cameras[selectedCamera].connected){return;};
   let command = 'http://'+
                 Cameras[selectedCamera].address + ':' +
                 Cameras[selectedCamera].port + '/cgi-bin/aw_ptz?cmd=%23M';
   if(index < 10){command = command + 0}
   command = command + index + '&res=1';
-  http.get(command);
+  http.get(command).on("error", (err)=>{console.log(err.message)});;
 }
 
 function setManualFocus(){
+  if(!Cameras[selectedCamera].connected){return;};
   let command = 'http://'+
               Cameras[selectedCamera].address + ':' +
               Cameras[selectedCamera].port + '/cgi-bin/aw_ptz?cmd=%23D10&res=1';
-  http.get(command);
+  http.get(command).on("error", (err)=>{console.log(err.message)});;
 }
 
 
 function setAutoFocus(){
+  if(!Cameras[selectedCamera].connected){return;};
   let command = 'http://'+
               Cameras[selectedCamera].address + ':' +
               Cameras[selectedCamera].port + '/cgi-bin/aw_ptz?cmd=%23D11&res=1';
-  http.get(command);
+  http.get(command).on("error", (err)=>{console.log(err.message)});;
 }
 
 function setOTAF(){
+  if(!Cameras[selectedCamera].connected){return;};
   let command = 'http://'+
             Cameras[selectedCamera].address + ':' +
             Cameras[selectedCamera].port + '/cgi-bin/aw_cam?cmd=OSE:69:1&res=1';
-  http.get(command);
+  http.get(command).on("error", (err)=>{console.log(err.message)});;
 }
 
 function adjustFocus(cmd){
+  if(!Cameras[selectedCamera].connected){return;};
   let command = 'http://'+
             Cameras[selectedCamera].address + ':' +
             Cameras[selectedCamera].port + '/cgi-bin/aw_ptz?cmd=%23F';
@@ -99,7 +108,7 @@ function adjustFocus(cmd){
     command = command + '50&res=1';
   }
 
-  http.get(command);
+  http.get(command).on("error", (err)=>{console.log(err.message)});;
 }
 
 function processPT(pan, tilt){
@@ -236,7 +245,7 @@ function getLiveData(){
           Cameras[cameraId].liveValues.autoFocus = true;
         }
       }
-      //if there was a change in th state updae the gui
+      //if there was a change in the state updae the gui
       if(change && cameraId == selectedCamera){
         GUI_displayLiveValues();
       }
@@ -249,12 +258,15 @@ function getLiveData(){
 
 
 
-
 function connectLoop(){
+  //Camera Connection Loop
+  //Runs on loop to check if the cameras are connected
+  //step through the cameras
   for (var i = 0; i < cameraCount; i++) {
+    //if enabled try and ping the camear
     if(Cameras[i].enabled){
       cameraPing(i);
-
+      //if three packets are sent with no reply the camera is not connected
       if(packetCount - Cameras[i].connectCount < 3){
         setConnectState(i, true);
       } else{
@@ -263,25 +275,63 @@ function connectLoop(){
     }
   }
   packetCount++;
-
+  //if the camera is connected poll it for live data
   if(Cameras[selectedCamera].connected){
     getLiveData();
   }
 }
 
-
+//-----------------------------------------------------------------------------
 //public functions
 exports.init = function(item){
   Window = item;
+  Gamepad.init(Window, processPT, processZoom);
   GUI_updateSettings();
   setInterval(PTZloop, 130);
   setInterval(connectLoop, 1000);
 }
 
+//-----------------------------------------------------------------------------
+//Gamepad buttonCallbacks
+Gamepad.attachButtonCallback(1,'Select Camera', true,
+    selectCamera,
+    null);
 
+Gamepad.attachButtonCallback(2,'Recall Preset', true,
+    function(index){recallPreset(index);
+                            Window.webContents.send('blinkPreset', index);},
+    null);
+
+Gamepad.attachButtonCallback(3,'Auto Focus', false,
+    function(index){setAutoFocus(); Window.webContents.send('blinkAF');},
+    null);
+
+Gamepad.attachButtonCallback(4,'Manual Focus', false,
+    function(index){setManualFocus(); Window.webContents.send('blinkMF');},
+    null);
+
+Gamepad.attachButtonCallback(5,'Focus Near', false,
+    function(index){adjustFocus('near');
+                            Window.webContents.send('blinkMFnear', true);},
+    function(index){adjustFocus('stop');
+                            Window.webContents.send('blinkMFnear', false);});
+
+Gamepad.attachButtonCallback(6,'Focus Far', false,
+    function(index){adjustFocus('far');
+                            Window.webContents.send('blinkMFfar', true);},
+    function(index){adjustFocus('stop');
+                            Window.webContents.send('blinkMFfar', false);});
+
+Gamepad.attachButtonCallback(7,'Touch Focus', false,
+    function(index){setOTAF();  Window.webContents.send('blinkOTAF');},
+    null);
+
+//-----------------------------------------------------------------------------
 //GUI Commands
+//Commands that are sent to the rendere process
 function GUI_selectCamera(){
-  Window.webContents.send('selectCamera', selectedCamera, Cameras[selectedCamera]);
+  Window.webContents.send('selectCamera', selectedCamera,
+                                                Cameras[selectedCamera]);
 }
 
 function GUI_connectCamera(index){
@@ -289,16 +339,19 @@ function GUI_connectCamera(index){
 }
 
 function GUI_updateSettings(){
-  Window.webContents.send('updateSettings', Cameras, selectedCamera);
+  Window.webContents.send('updateSettings', Cameras, selectedCamera,
+                            );
 }
 
 function GUI_displayLiveValues(){
-  Window.webContents.send('displayLiveValues', Cameras[selectedCamera].liveValues);
+  Window.webContents.send('displayLiveValues',
+                                      Cameras[selectedCamera].liveValues);
   console.log(Cameras[selectedCamera].liveValues)
 }
 
-
+//-----------------------------------------------------------------------------
 //from GUI
+//commands received from the renderer process
 
 ipcMain.on('selectCamera', function(event, index){
   selectCamera(index);
@@ -347,10 +400,10 @@ ipcMain.on('setZoomSpeed', function(event, value){
   ZoomSpeed = value;
 })
 
-ipcMain.on('PanTilt', function(event, pan, tilt){
-  processPT(pan, tilt);
-})
-
-ipcMain.on('Zoom', function(event, value){
-  processZoom(value);
-})
+// ipcMain.on('PanTilt', function(event, pan, tilt){
+//   processPT(pan, tilt);
+// })
+//
+// ipcMain.on('Zoom', function(event, value){
+//   processZoom(value);
+// })

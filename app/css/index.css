@@ -334,7 +334,7 @@ body {
     transform: rotate(22.5deg);
 }
 
-#SETTINGS_PANE{
+.settings_pane{
   position: fixed;
   width: 685px;
   height: 643px;
@@ -358,7 +358,7 @@ body {
   line-height: 18px;
 }
 
-.settings_camera_number{
+.settings_line_number{
   text-align: center;
   height: 24px;
   line-height: 24px;
@@ -369,7 +369,7 @@ body {
   line-height: 24px;
 }
 
-#SETTINGS_CLOSE_BUTTON{
+.settings_close_button{
   position: absolute;
   right: 5px;
   top: 5px;
@@ -383,6 +383,82 @@ body {
   cursor: pointer;
 }
 
-#SETTINGS_CLOSE_BUTTON:hover{
+.settings_close_button:hover{
   background-color: #505050;
+}
+
+#MAP_BUTTON{
+  position: absolute;
+  left: 10px;
+  top: 300px;
+  width: 200px;
+  height: 20px;
+  border-style: solid;
+  border-width: 1px;
+  border-color: white;
+  text-align: center;
+  line-height: 20px;
+  cursor: pointer;
+}
+
+#MAP_BUTTON:hover{
+  background-color: #505050;
+}
+
+#PAD_MAP_PANE{
+  display: none;
+}
+
+#GAMEPAD_DISPLAY{
+  position: absolute;
+  margin-left: -250px;
+  left: 50%;
+  top: 40px;
+  width: 500px;
+}
+.active {
+  fill: yellow;
+}
+path.active {
+  fill: red;
+}
+
+#BUTTONS_MAP_GRID{
+  grid-template-columns: 65px 160px 60px 5px 65px 160px 60px;
+  top: 295px;
+  left: 40px;
+}
+
+#JOYSTICK_OPTIONS_GRID{
+  grid-template-columns: 65px 100px 5px 125px 5px 75px;
+  top: 565px;
+  left: 40px;
+}
+
+#MAP_LEFT_LABEL{
+  grid-row: 2;
+}
+
+#MAP_RIGHT_LABEL{
+  grid-row: 3;
+}
+
+#MAP_LEFT_FUNCTION{
+  grid-row: 2;
+  grid-column: 2;
+}
+
+#MAP_RIGHT_FUNCTION{
+  grid-row: 3;
+  grid-column: 2;
+}
+
+#AXE_SWAP_CONTAINER{
+  grid-column: 4;
+  grid-row: 2;
+}
+
+#THRESHOLD_INPUT{
+  grid-column: 6;
+  grid-row: 2;
 }
