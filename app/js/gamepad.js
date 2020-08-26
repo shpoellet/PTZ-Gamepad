@@ -5,7 +5,7 @@ var Window;
 var mapMode = false;
 var axeSwap = false;
 var invertTilt = false;
-var zeroThreshold = 0.02;
+var zeroThreshold = 0.04;
 
 var PanTiltCallback;
 var ZoomCallback;
@@ -23,19 +23,19 @@ for (let i = 0; i < 17; i++) {
 
 
 
-buttonMap[14].callBack = 2;
-buttonMap[14].paramater = 0;
-
-buttonMap[12].callBack = 1;
-buttonMap[12].paramater = 1;
-
-buttonMap[15].callBack = 1;
-buttonMap[15].paramater = 2;
-
-buttonMap[13].callBack = 1;
-buttonMap[13].paramater = 3;
-
-buttonMap[9].callBack = 7;
+// buttonMap[14].callBack = 2;
+// buttonMap[14].paramater = 0;
+//
+// buttonMap[12].callBack = 1;
+// buttonMap[12].paramater = 1;
+//
+// buttonMap[15].callBack = 1;
+// buttonMap[15].paramater = 2;
+//
+// buttonMap[13].callBack = 1;
+// buttonMap[13].paramater = 3;
+//
+// buttonMap[9].callBack = 7;
 
 
 function AxeAction(index, axeValues){
@@ -94,9 +94,11 @@ function ButtonReleased(index){
   } else{
     console.log("no function assigned to this button");
   }
-
 }
 
+function UpdateGuiMap(){
+  Window.webContents.send('UpdateGuiMap', buttonMap, axeSwap, invertTilt, zeroThreshold);
+}
 
 
 
@@ -108,6 +110,8 @@ exports.init = function (item, PTCB, ZCB){
   Window = item;
   PanTiltCallback = PTCB;
   ZoomCallback = ZCB;
+  Window.webContents.send('setThreshold', zeroThreshold);
+  UpdateGuiMap();
 }
 
 exports.attachButtonCallback = function(index, name, value, pressedCB, releasedCB){
@@ -119,7 +123,40 @@ exports.attachButtonCallback = function(index, name, value, pressedCB, releasedC
   }
 }
 
+exports.setThreshold = function(value){
+  zeroThreshold = value;
+  Window.webContents.send('setThreshold', zeroThreshold);
+}
 
+exports.getThreshold = function(){
+  return zeroThreshold;
+}
+
+exports.setAxeSwap = function(value){
+  axeSwap = value;
+}
+
+exports.getAxeSwap = function(){
+  return axeSwap;
+}
+
+exports.setTiltInvert = function(value){
+  invertTilt = value;
+}
+
+exports.getTiltInvert = function(){
+  return invertTilt;
+}
+
+exports.assignButton = function(index, action, value = null){
+  buttonMap[index].callBack = action;
+  buttonMap[index].paramater = value;
+}
+
+exports.removeButton = function(index){
+  buttonMap[index].callBack = 0;
+  buttonMap[index].paramater = null;
+}
 
 //-----------------------------------------------------------------------------
 //from renderer process

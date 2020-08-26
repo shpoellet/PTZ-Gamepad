@@ -66,12 +66,15 @@ exports.init = function (AXCB, BCB){
   ButtonCallback = BCB;
 }
 
+//Sets the zero threshold and caclulates the mapping equation
 exports.setThreshold = function(value){
   zeroThreshold = value;
+  //solves y=ax+b
   a = 1/(1-zeroThreshold);
   b = 1 - a;
 }
 
+//returs the zero threshold
 exports.getThreshold = function(){
   return zeroThreshold;
 }

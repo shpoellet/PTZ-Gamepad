@@ -430,7 +430,7 @@ path.active {
 }
 
 #JOYSTICK_OPTIONS_GRID{
-  grid-template-columns: 65px 100px 5px 125px 5px 75px;
+  grid-template-columns: 65px 100px 5px 125px 5px 125px 5px 75px;
   top: 565px;
   left: 40px;
 }
@@ -458,7 +458,12 @@ path.active {
   grid-row: 2;
 }
 
-#THRESHOLD_INPUT{
+#INVERT_TILT_CONTAINER{
   grid-column: 6;
+  grid-row: 2;
+}
+
+#THRESHOLD_INPUT{
+  grid-column: 8;
   grid-row: 2;
 }

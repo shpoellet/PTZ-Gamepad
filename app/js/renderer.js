@@ -183,56 +183,9 @@ function blinkMFfar(state){
 }
 
 
-//data passed from the main process
 
-ipcRenderer.on('updateSettings', function(event, Cameras, Selected){
-  for (var i = 0; i < Cameras.length; i++) {
-    document.getElementById("SETTINGS_CAMERA_ENABLED_"+i).checked = Cameras[i].enabled;
-    document.getElementById("SETTINGS_CAMERA_ADDRESS_"+i).value = Cameras[i].address;
-    document.getElementById("SETTINGS_CAMERA_PORT_"+i).value = Cameras[i].port;
-    displayCameraStatus(i, Cameras[i].enabled, Cameras[i].connected)
-  }
-  setSelectedCamera(Selected, Cameras[Selected]);
-})
 
-ipcRenderer.on('selectCamera', function(event, index, cameraValues){
-  setSelectedCamera(index, cameraValues);
-})
-
-ipcRenderer.on('connectCamera', function(event, index, cameraValues){
-  displayCameraStatus(index, cameraValues.enabled, cameraValues.connected);
-  if(index == selectedCamera){
-    setSelectedCamera(index, cameraValues);
-  }
-})
-
-ipcRenderer.on('displayLiveValues', function(event, liveValues){
-  displayCameraValues(liveValues);
-})
-
-ipcRenderer.on('drawPT', function(event, values){
-  pan = values[0];
-  tilt = values[1];
-  drawPT();
-})
-
-ipcRenderer.on('drawZoom', function(event, value){
-  zoom = value;
-  drawZoom();
-})
-
-ipcRenderer.on('blinkPreset', function(event, index){blinkPreset(index);});
-
-ipcRenderer.on('blinkAF', blinkAF);
-
-ipcRenderer.on('blinkMF', blinkMF);
-
-ipcRenderer.on('blinkMFnear', function(event, value){blinkMFnear(value);});
-
-ipcRenderer.on('blinkMFfar', function(event, value){blinkMFfar(value);});
-
-ipcRenderer.on('blinkOTAF', blinkOTAF);
-
+//-----------------------------------------------------------------------------
 // Button Clicks
 
 function CameraSelectButton(index){
@@ -285,16 +238,89 @@ function ZoomSpeedSlider(value){
 }
 
 
-
+//-----------------------------------------------------------------------------
 //Gamepad functions
 
 function AxeAction(index, values){
+  //callback for when the gamepad axes move
+  //received data from the Gamepad interface and send it to the main process
   ipcRenderer.send('AxeAction', index, values);
 }
 
 function ButtonAction(index, value){
+  //callback for when a gamepad button is pressed or releasedCB
+  //received data from the Gamepad interface and send it to the main process
   ipcRenderer.send('ButtonAction', index, value);
 }
 
+function setThreshold(value){
+  Gamepad.setThreshold(value);
+}
 
+//Attach the callbacks to the Gamepad interfae
 Gamepad.init(AxeAction, ButtonAction);
+
+//-----------------------------------------------------------------------------
+//data passed from the main process
+//-----------------------------------------------------------------------------
+
+ipcRenderer.on('updateSettings', function(event, Cameras, Selected){
+  for (let i = 0; i < Cameras.length; i++) {
+    document.getElementById("SETTINGS_CAMERA_ENABLED_"+i).checked = Cameras[i].enabled;
+    document.getElementById("SETTINGS_CAMERA_ADDRESS_"+i).value = Cameras[i].address;
+    document.getElementById("SETTINGS_CAMERA_PORT_"+i).value = Cameras[i].port;
+    displayCameraStatus(i, Cameras[i].enabled, Cameras[i].connected)
+  }
+  setSelectedCamera(Selected, Cameras[Selected]);
+})
+
+ipcRenderer.on('selectCamera', function(event, index, cameraValues){
+  setSelectedCamera(index, cameraValues);
+})
+
+ipcRenderer.on('connectCamera', function(event, index, cameraValues){
+  displayCameraStatus(index, cameraValues.enabled, cameraValues.connected);
+  if(index == selectedCamera){
+    setSelectedCamera(index, cameraValues);
+  }
+})
+
+ipcRenderer.on('displayLiveValues', function(event, liveValues){
+  displayCameraValues(liveValues);
+})
+
+ipcRenderer.on('drawPT', function(event, values){
+  pan = values[0];
+  tilt = values[1];
+  drawPT();
+})
+
+ipcRenderer.on('drawZoom', function(event, value){
+  zoom = value;
+  drawZoom();
+})
+
+ipcRenderer.on('blinkPreset', function(event, index){blinkPreset(index);});
+
+ipcRenderer.on('blinkAF', blinkAF);
+
+ipcRenderer.on('blinkMF', blinkMF);
+
+ipcRenderer.on('blinkMFnear', function(event, value){blinkMFnear(value);});
+
+ipcRenderer.on('blinkMFfar', function(event, value){blinkMFfar(value);});
+
+ipcRenderer.on('blinkOTAF', blinkOTAF);
+
+ipcRenderer.on('setThreshold', function(event, value){setThreshold(value);});
+
+
+ipcRenderer.on('UpdateGuiMap', function(event, buttonMap, axeSwap, invertTilt, zeroThreshold){
+  for (let i = 0; i < buttonMap.length; i++) {
+    document.getElementById("MAP_BUTTON_ACTION_"+i).value = buttonMap[i].callBack;
+    document.getElementById("BUTTON_VALUE_"+i).value = buttonMap[i].paramater;
+  }
+  document.getElementById("AXE_SWAP_CHECKBOX").checked = axeSwap;
+  document.getElementById("INVERT_TILT_CHECKBOX").checked = invertTilt;
+  document.getElementById("THRESHOLD_INPUT").value = zeroThreshold;
+})
