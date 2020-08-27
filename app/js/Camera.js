@@ -13,10 +13,10 @@ module.exports = class Camera {
     this.enabled = false;
     this.connected = false;
     this.connectCount = 0;
-    this.address = null;
-    this.port = 80;
-    // this.address = 'pac001-gateway.gbpac.uni.edu';
-    // this.port = 82;
+    // this.address = null;
+    // this.port = 80;
+    this.address = 'pac001-gateway.gbpac.uni.edu';
+    this.port = 82;
 
     this.pan = 50;
     this.tilt  = 50;

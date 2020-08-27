@@ -15,6 +15,7 @@ var zoom = 0;
 var axeSwap = false;
 var invertTilt = false;
 
+var mapMode = false;
 //local functions
 
 
@@ -81,13 +82,18 @@ function setSelectedCamera(index, cameraValues){
 
 
 function saveSettings(){
-  var newValues = [];
-  for (var i = 0; i < 8; i++) {
+  let newValues = [];
+  for (let i = 0; i < 8; i++) {
     newValues[i] = {
       enabled : document.getElementById("SETTINGS_CAMERA_ENABLED_"+i).checked,
       address : document.getElementById("SETTINGS_CAMERA_ADDRESS_"+i).value,
-      port : document.getElementById("SETTINGS_CAMERA_PORT_"+i).value
+      port : null
     }
+
+    let newPort = Math.floor(document.getElementById("SETTINGS_CAMERA_PORT_"+i).value)
+    if(newPort < 1){newPort = 1}
+    newValues[i].port = newPort;
+    console.log(newValues[i].address.length)
   }
   ipcRenderer.send('saveSettings', newValues);
   closeSettingsPane();
@@ -95,15 +101,50 @@ function saveSettings(){
 
 
 function saveMap(){
-  // var newValues = [];
-  // for (var i = 0; i < 8; i++) {
-  //   newValues[i] = {
-  //     enabled : document.getElementById("SETTINGS_CAMERA_ENABLED_"+i).checked,
-  //     address : document.getElementById("SETTINGS_CAMERA_ADDRESS_"+i).value,
-  //     port : document.getElementById("SETTINGS_CAMERA_PORT_"+i).value
-  //   }
-  // }
-  // ipcRenderer.send('saveSettings', newValues);
+  let newMap = [];
+  for (let i = 0; i < 17; i++){
+    newMap[i]={
+    callBack: document.getElementById("MAP_BUTTON_ACTION_"+i).value,
+    parameter: null
+    }
+
+    switch (+newMap[i].callBack) {
+      case 1:
+
+        let newValue1 = Math.floor(document.getElementById("BUTTON_VALUE_"+i).value);
+        console.log(newValue1)
+        if(newValue1 < 1){
+          newMap[i].parameter = 0;
+        } else if(newValue1 > 8){
+          newMap[i].parameter = 7;
+        } else{
+          newMap[i].parameter = newValue1 - 1;
+        }
+        break;
+      case 2:
+        let newValue2 = Math.floor(document.getElementById("BUTTON_VALUE_"+i).value);
+        if(newValue2 < 1){
+          newMap[i].parameter = 0;
+        } else if(newValue2 > 32){
+          newMap[i].parameter = 31;
+        } else{
+          newMap[i].parameter = newValue2 - 1;
+        }
+        break;
+    }
+  }
+
+  let newThreshold = Math.floor(document.getElementById("THRESHOLD_INPUT").value*100)/100;
+
+  if(newThreshold < 0){
+    newThreshold = 0;
+  } else if(newThreshold > 0.5){
+    newThreshold = 0.5;
+  }
+  ipcRenderer.send('saveMap', newMap,
+                        document.getElementById("AXE_SWAP_CHECKBOX").checked,
+                        document.getElementById("INVERT_TILT_CHECKBOX").checked,
+                        newThreshold);
   closeMapPane();
 }
 
@@ -188,6 +229,29 @@ function blinkMFfar(state){
 //-----------------------------------------------------------------------------
 // Button Clicks
 
+//Page Navigation Page Clicks
+
+document.getElementById("SETTINGS_GEAR").onmousedown = function(){
+  document.getElementById("SETTINGS_MASK_PANE").style.display = 'block';
+  document.getElementById("SETTINGS_PANE").style.display = 'block';
+}
+
+function closeSettingsPane(){
+  document.getElementById("SETTINGS_MASK_PANE").style.display = 'none';
+  document.getElementById("SETTINGS_PANE").style.display = 'none';
+}
+
+function openMapPane(){
+  document.getElementById("PAD_MAP_PANE").style.display = 'block';
+  mapMode = true;
+}
+
+function closeMapPane(){
+  document.getElementById("PAD_MAP_PANE").style.display = 'none';
+  mapMode = false;
+}
+
+//Other Button Clicks
 function CameraSelectButton(index){
   ipcRenderer.send('selectCamera', index);
 }
@@ -237,20 +301,64 @@ function ZoomSpeedSlider(value){
   ipcRenderer.send('setZoomSpeed', value);
 }
 
+function EnableButtonInput(index){
+  let callBackID = document.getElementById("MAP_BUTTON_ACTION_"+index).value;
+  if(callBackID == 1 || callBackID == 2){
+    document.getElementById("BUTTON_VALUE_"+index).value = 1;
+    document.getElementById("BUTTON_VALUE_"+index).disabled = false;
+  }
+  else {
+    document.getElementById("BUTTON_VALUE_"+index).value = null;
+    document.getElementById("BUTTON_VALUE_"+index).disabled = true;
+  }
+}
+
+function ChangeAxeLabels(){
+  let axeSwap = document.getElementById("AXE_SWAP_CHECKBOX").checked;
+  if(axeSwap){
+    document.getElementById("MAP_LEFT_FUNCTION").innerHTML = "Pan/Tilt";
+    document.getElementById("MAP_RIGHT_FUNCTION").innerHTML = "Zoom";
+  }else{
+    document.getElementById("MAP_LEFT_FUNCTION").innerHTML = "Zoom";
+    document.getElementById("MAP_RIGHT_FUNCTION").innerHTML = "Pan/Tilt";
+  }
+}
 
 //-----------------------------------------------------------------------------
 //Gamepad functions
 
-function AxeAction(index, values){
+function AxeAction(index, axeValues){
   //callback for when the gamepad axes move
-  //received data from the Gamepad interface and send it to the main process
-  ipcRenderer.send('AxeAction', index, values);
+  if(mapMode){
+    let mapThreshold = 0.5;
+    document.getElementById('axe-'+index+'-up').classList.toggle('active', false);
+    document.getElementById('axe-'+index+'-down').classList.toggle('active', false);
+    document.getElementById('axe-'+index+'-right').classList.toggle('active', false);
+    document.getElementById('axe-'+index+'-left').classList.toggle('active', false);
+    if(axeValues[0] < -mapThreshold){
+      document.getElementById('axe-'+index+'-left').classList.toggle('active', true);
+    } else if(axeValues[0] > mapThreshold){
+      document.getElementById('axe-'+index+'-right').classList.toggle('active', true);
+    }
+    if(axeValues[1] < -mapThreshold){
+      document.getElementById('axe-'+index+'-up').classList.toggle('active', true);
+    } else if(axeValues[1] > mapThreshold){
+      document.getElementById('axe-'+index+'-down').classList.toggle('active', true);
+    }
+  }else{
+    //received data from the Gamepad interface and send it to the main process
+    ipcRenderer.send('AxeAction', index, axeValues);
+  }
 }
 
 function ButtonAction(index, value){
   //callback for when a gamepad button is pressed or releasedCB
-  //received data from the Gamepad interface and send it to the main process
-  ipcRenderer.send('ButtonAction', index, value);
+  if(mapMode){
+    document.getElementById('button-'+index).classList.toggle('active', value);
+  }else{
+    //received data from the Gamepad interface and send it to the main process
+    ipcRenderer.send('ButtonAction', index, value);
+  }
 }
 
 function setThreshold(value){
@@ -314,13 +422,26 @@ ipcRenderer.on('blinkOTAF', blinkOTAF);
 
 ipcRenderer.on('setThreshold', function(event, value){setThreshold(value);});
 
-
 ipcRenderer.on('UpdateGuiMap', function(event, buttonMap, axeSwap, invertTilt, zeroThreshold){
   for (let i = 0; i < buttonMap.length; i++) {
     document.getElementById("MAP_BUTTON_ACTION_"+i).value = buttonMap[i].callBack;
-    document.getElementById("BUTTON_VALUE_"+i).value = buttonMap[i].paramater;
+    if(buttonMap[i].callBack == 1 || buttonMap[i].callBack == 2){
+      document.getElementById("BUTTON_VALUE_"+i).value = +buttonMap[i].parameter + 1;
+      document.getElementById("BUTTON_VALUE_"+i).disabled = false;
+    }
+    else{
+      document.getElementById("BUTTON_VALUE_"+i).value = null;
+      document.getElementById("BUTTON_VALUE_"+i).disabled = true;
+    }
   }
   document.getElementById("AXE_SWAP_CHECKBOX").checked = axeSwap;
+  if(axeSwap){
+    document.getElementById("MAP_LEFT_FUNCTION").innerHTML = "Pan/Tilt";
+    document.getElementById("MAP_RIGHT_FUNCTION").innerHTML = "Zoom";
+  }else{
+    document.getElementById("MAP_LEFT_FUNCTION").innerHTML = "Zoom";
+    document.getElementById("MAP_RIGHT_FUNCTION").innerHTML = "Pan/Tilt";
+  }
   document.getElementById("INVERT_TILT_CHECKBOX").checked = invertTilt;
   document.getElementById("THRESHOLD_INPUT").value = zeroThreshold;
 })

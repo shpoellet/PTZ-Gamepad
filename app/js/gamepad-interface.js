@@ -6,7 +6,6 @@ var zeroThreshold = 0.04;
 var a = 1/(1-zeroThreshold);
 var b = 1 - a;
 
-console.log(a +" " + b)
 
 var AxeCallback;
 var ButtonCallback;

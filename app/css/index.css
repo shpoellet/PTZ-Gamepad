@@ -369,6 +369,10 @@ body {
   line-height: 24px;
 }
 
+.settings_text_input:disabled{
+  background-color: #aaaaaa;
+}
+
 .settings_close_button{
   position: absolute;
   right: 5px;

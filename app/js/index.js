@@ -17,7 +17,7 @@ document.getElementById("PRESET_BUTTONS").innerHTML=inner_html;
 inner_html = document.getElementById("BUTTONS_MAP_GRID").innerHTML;
 for (let i = 0; i < 17; i++) {
   var index = Math.floor(i/2) + Math.floor(i%2)*9
-  inner_html = inner_html + '<div class="settings_line_number">'+index+'</div><select  class="settings_dropdown" id="MAP_BUTTON_ACTION_'+index+'"></select><input type="text" id="BUTTON_VALUE_'+index+'">';
+  inner_html = inner_html + '<div class="settings_line_number">'+index+'</div><select  class="settings_dropdown" id="MAP_BUTTON_ACTION_'+index+'" onchange=EnableButtonInput('+index+')></select><input type="number" step="1" min="1" class="settings_text_input" id="BUTTON_VALUE_'+index+'">';
   if(Math.floor(i%2) == 0) inner_html = inner_html + '<div></div>'
 }
 document.getElementById("BUTTONS_MAP_GRID").innerHTML=inner_html;
@@ -34,23 +34,4 @@ for(let i = 0; i < 17; i++){
       opt.value = j;
       sel.appendChild(opt);
   }
-}
-//Page Navigation Page Clicks
-
-document.getElementById("SETTINGS_GEAR").onmousedown = function(){
-  document.getElementById("SETTINGS_MASK_PANE").style.display = 'block';
-  document.getElementById("SETTINGS_PANE").style.display = 'block';
-}
-
-function closeSettingsPane(){
-  document.getElementById("SETTINGS_MASK_PANE").style.display = 'none';
-  document.getElementById("SETTINGS_PANE").style.display = 'none';
-}
-
-function openMapPane(){
-  document.getElementById("PAD_MAP_PANE").style.display = 'block';
-}
-
-function closeMapPane(){
-  document.getElementById("PAD_MAP_PANE").style.display = 'none';
 }

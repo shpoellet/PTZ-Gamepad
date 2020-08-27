@@ -17,82 +17,44 @@ var buttonMap = [];
 for (let i = 0; i < 17; i++) {
   buttonMap[i]={
     callBack: 0,
-    paramater: null
+    parameter: null
   }
 }
 
-
-
-// buttonMap[14].callBack = 2;
-// buttonMap[14].paramater = 0;
-//
-// buttonMap[12].callBack = 1;
-// buttonMap[12].paramater = 1;
-//
-// buttonMap[15].callBack = 1;
-// buttonMap[15].paramater = 2;
-//
-// buttonMap[13].callBack = 1;
-// buttonMap[13].paramater = 3;
-//
-// buttonMap[9].callBack = 7;
-
-
 function AxeAction(index, axeValues){
-  if(mapMode){
-    // send data to renderer process
-
+  let axe = index;
+  if(axeSwap){axe = index == 0 ? 1 : 0;}
+  if(axe == 1){
+    // Pan Tilt values
+    let x = Math.round(axeValues[0]*100);
+    let y = Math.round(axeValues[1]*-100);
+    if(invertTilt){y=y*-1};
+    PanTiltCallback(x,y);
+    Window.webContents.send('drawPT', [x, y]);
   } else{
-    let axe = index;
-    if(axeSwap){axe = index == 0 ? 1 : 0;}
-    if(axe == 1){
-      // Pan Tilt values
-      let x = Math.round(axeValues[0]*100);
-      let y = Math.round(axeValues[1]*-100);
-      if(invertTilt){y=y*-1};
-      PanTiltCallback(x,y);
-      Window.webContents.send('drawPT', [x, y]);
-    } else{
-      let y = Math.round(axeValues[1]*-100);
-      ZoomCallback(y);
-      Window.webContents.send('drawZoom', y);
-    }
+    let y = Math.round(axeValues[1]*-100);
+    ZoomCallback(y);
+    Window.webContents.send('drawZoom', y);
   }
 }
 
 function ButtonPressed(index){
-  console.log("button pressed "+index);
-  //check if in map mode
-  if(mapMode){
-    // document.getElementById('button-'+index).classList.toggle('active', true);
-  }
   // check if a funciton isassigned to this button
-  else if(buttonMap[index].callBack > 0){
+  if(buttonMap[index].callBack > 0){
     //check if a pressed fucnction is assigned
     if(buttonCallbacks[buttonMap[index].callBack].pressed){
-      console.log("calling function " + buttonCallbacks[buttonMap[index].callBack].name);
-      buttonCallbacks[buttonMap[index].callBack].pressed(buttonMap[index].paramater);
+      buttonCallbacks[buttonMap[index].callBack].pressed(buttonMap[index].parameter);
     }
-  } else{
-    console.log("no function assigned to this button");
   }
 }
 
 function ButtonReleased(index){
-  console.log("button released "+index);
-  //check if in map mode
-  if(mapMode){
-    // document.getElementById('button-'+index).classList.toggle('active', false);
-  }
   // check if a funciton isassigned to this button
-  else if(buttonMap[index].callBack > 0){
+  if(buttonMap[index].callBack > 0){
     //check if a pressed fucnction is assigned
     if(buttonCallbacks[buttonMap[index].callBack].released){
-      console.log("calling function " + buttonCallbacks[buttonMap[index].callBack].name);
-      buttonCallbacks[buttonMap[index].callBack].released(buttonMap[index].paramater);
+      buttonCallbacks[buttonMap[index].callBack].released(buttonMap[index].parameter);
     }
-  } else{
-    console.log("no function assigned to this button");
   }
 }
 
@@ -150,21 +112,36 @@ exports.getTiltInvert = function(){
 
 exports.assignButton = function(index, action, value = null){
   buttonMap[index].callBack = action;
-  buttonMap[index].paramater = value;
+  buttonMap[index].parameter = value;
 }
 
 exports.removeButton = function(index){
   buttonMap[index].callBack = 0;
-  buttonMap[index].paramater = null;
+  buttonMap[index].parameter = null;
 }
 
 //-----------------------------------------------------------------------------
 //from renderer process
 ipcMain.on('AxeAction', function(event, index, values){
   AxeAction(index, values);
-})
+});
 
 ipcMain.on('ButtonAction', function(event, index, value){
   if (value){ButtonPressed(index);}
   else{ButtonReleased(index);}
-})
+});
+
+ipcMain.on('saveMap', function(event, newMap, newAxeSwap, newTiltInvert, newThreshold){
+  for(let i = 0; i < 17; i++){
+    buttonMap[i].callBack = newMap[i].callBack;
+    buttonMap[i].parameter = newMap[i].parameter;
+  }
+  axeSwap = newAxeSwap;
+  invertTilt = newTiltInvert;
+  zeroThreshold = newThreshold;
+  UpdateGuiMap();
+});
+
+ipcMain.on('setMapMode', function(event, value){
+  mapMode = value;
+});

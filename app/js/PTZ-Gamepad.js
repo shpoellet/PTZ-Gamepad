@@ -53,7 +53,12 @@ function recallPreset(index){
                 Cameras[selectedCamera].port + '/cgi-bin/aw_ptz?cmd=%23R';
   if(index < 10){command = command + 0}
   command = command + index + '&res=1';
-  http.get(command).on("error", (err)=>{console.log(err.message)});;
+  try{
+    http.get(command).on("error", (err)=>{console.log(err.message)});;
+  }
+  catch(err){
+    HTTPerror(err, cameraId);
+  }
 }
 
 function storePreset(index){
@@ -63,7 +68,12 @@ function storePreset(index){
                 Cameras[selectedCamera].port + '/cgi-bin/aw_ptz?cmd=%23M';
   if(index < 10){command = command + 0}
   command = command + index + '&res=1';
-  http.get(command).on("error", (err)=>{console.log(err.message)});;
+  try{
+    http.get(command).on("error", (err)=>{console.log(err.message)});;
+  }
+  catch(err){
+    HTTPerror(err, cameraId);
+  }
 }
 
 function setManualFocus(){
@@ -71,7 +81,12 @@ function setManualFocus(){
   let command = 'http://'+
               Cameras[selectedCamera].address + ':' +
               Cameras[selectedCamera].port + '/cgi-bin/aw_ptz?cmd=%23D10&res=1';
-  http.get(command).on("error", (err)=>{console.log(err.message)});;
+  try{
+    http.get(command).on("error", (err)=>{console.log(err.message)});;
+  }
+  catch(err){
+    HTTPerror(err, cameraId);
+  }
 }
 
 
@@ -80,7 +95,12 @@ function setAutoFocus(){
   let command = 'http://'+
               Cameras[selectedCamera].address + ':' +
               Cameras[selectedCamera].port + '/cgi-bin/aw_ptz?cmd=%23D11&res=1';
-  http.get(command).on("error", (err)=>{console.log(err.message)});;
+  try{
+    http.get(command).on("error", (err)=>{console.log(err.message)});;
+  }
+  catch(err){
+    HTTPerror(err, cameraId);
+  }
 }
 
 function setOTAF(){
@@ -88,7 +108,12 @@ function setOTAF(){
   let command = 'http://'+
             Cameras[selectedCamera].address + ':' +
             Cameras[selectedCamera].port + '/cgi-bin/aw_cam?cmd=OSE:69:1&res=1';
-  http.get(command).on("error", (err)=>{console.log(err.message)});;
+  try{
+    http.get(command).on("error", (err)=>{console.log(err.message)});;
+  }
+  catch(err){
+    HTTPerror(err, cameraId);
+  }
 }
 
 function adjustFocus(cmd){
@@ -108,7 +133,12 @@ function adjustFocus(cmd){
     command = command + '50&res=1';
   }
 
-  http.get(command).on("error", (err)=>{console.log(err.message)});;
+  try{
+    http.get(command).on("error", (err)=>{console.log(err.message)});;
+  }
+  catch(err){
+    HTTPerror(err, cameraId);
+  }
 }
 
 function processPT(pan, tilt){
@@ -139,7 +169,12 @@ function PTZloop(){
       command = command + Cameras[i].tilt + '&res=1';
 
       //send command
-      http.get(command).on("error", (err)=>{console.log(err.message)});
+      try{
+        http.get(command).on("error", (err)=>{console.log(err.message)});
+      }
+      catch(err){
+        HTTPerror(err, cameraId);
+      }
 
       //update sent values
       Cameras[i].sentPan = Cameras[i].pan;
@@ -158,7 +193,12 @@ function PTZloop(){
       command = command + Cameras[i].zoom + '&res=1';
 
       //send command
-      http.get(command).on("error", (err)=>{console.log(err.message)});
+      try{
+        http.get(command).on("error", (err)=>{console.log(err.message)});
+      }
+      catch(err){
+        HTTPerror(err, cameraId);
+      }
 
       //update sent values
       Cameras[i].sentZoom = Cameras[i].zoom;
@@ -175,30 +215,34 @@ function cameraPing(index){
                 Cameras[cameraId].port + '/cgi-bin/aw_ptz?cmd=%23O&res=1';
 
   //send command
+  try{
+    http.get(command, (res) => {
+      const { statusCode } = res;
 
-  http.get(command, (res) => {
-    const { statusCode } = res;
-
-    let error;
-    if (statusCode !== 200) {
-      console.error('Request Failed.\n' +  `Status Code: ${statusCode}`);
-      res.resume();
-      return;
-    }
-
-    res.setEncoding('utf8');
-    let rawData = '';
-    res.on('data', (chunk) => { rawData += chunk; });
-    res.on('end', () => {
-      if (rawData == 'p1'){
-          if (count > Cameras[cameraId].connectCount){
-            Cameras[cameraId].connectCount = count;
-          }
+      let error;
+      if (statusCode !== 200) {
+        console.error('Request Failed.\n' +  `Status Code: ${statusCode}`);
+        res.resume();
+        return;
       }
+
+      res.setEncoding('utf8');
+      let rawData = '';
+      res.on('data', (chunk) => { rawData += chunk; });
+      res.on('end', () => {
+        if (rawData == 'p1'){
+            if (count > Cameras[cameraId].connectCount){
+              Cameras[cameraId].connectCount = count;
+            }
+        }
+      });
+    }).on('error', (e) => {
+      console.error(`Got error: ${e.message}`);
     });
-  }).on('error', (e) => {
-    console.error(`Got error: ${e.message}`);
-  });
+  }
+  catch(err){
+    HTTPerror(err, cameraId);
+  }
 }
 
 
@@ -216,44 +260,49 @@ function getLiveData(){
                 Cameras[cameraId].port + '/cgi-bin/aw_ptz?cmd=%23D1&res=1';
 
   // send the command and creat a callback for the response
-  http.get(command, (res) => {
-    const { statusCode } = res;
+  try{
+    http.get(command, (res) => {
+      const { statusCode } = res;
 
-    //check if there were any erros in the response
-    let error;
-    if (statusCode !== 200) {
-      console.error('Request Failed.\n' +  `Status Code: ${statusCode}`);
-      res.resume();
-      return;
-    }
+      //check if there were any erros in the response
+      let error;
+      if (statusCode !== 200) {
+        console.error('Request Failed.\n' +  `Status Code: ${statusCode}`);
+        res.resume();
+        return;
+      }
 
-    //read the data
-    res.setEncoding('utf8');
-    let rawData = '';
-    res.on('data', (chunk) => { rawData += chunk; });
-    res.on('end', () => {
-      //process the returned data
-      let change = false;
-      if (rawData == 'd10'){
-        if(Cameras[cameraId].liveValues.autoFocus){
-          change = true;
-          Cameras[cameraId].liveValues.autoFocus = false;
+      //read the data
+      res.setEncoding('utf8');
+      let rawData = '';
+      res.on('data', (chunk) => { rawData += chunk; });
+      res.on('end', () => {
+        //process the returned data
+        let change = false;
+        if (rawData == 'd10'){
+          if(Cameras[cameraId].liveValues.autoFocus){
+            change = true;
+            Cameras[cameraId].liveValues.autoFocus = false;
+          }
+        } else if(rawData == 'd11'){
+          if (!Cameras[cameraId].liveValues.autoFocus){
+            change = true;
+            Cameras[cameraId].liveValues.autoFocus = true;
+          }
         }
-      } else if(rawData == 'd11'){
-        if (!Cameras[cameraId].liveValues.autoFocus){
-          change = true;
-          Cameras[cameraId].liveValues.autoFocus = true;
+        //if there was a change in the state updae the gui
+        if(change && cameraId == selectedCamera){
+          GUI_displayLiveValues();
         }
-      }
-      //if there was a change in the state updae the gui
-      if(change && cameraId == selectedCamera){
-        GUI_displayLiveValues();
-      }
+      });
+    }).on('error', (e) => {
+      //listen for timeouts
+      console.error(`Got error: ${e.message}`);
     });
-  }).on('error', (e) => {
-    //listen for timeouts
-    console.error(`Got error: ${e.message}`);
-  });
+  }
+  catch(err){
+    HTTPerror(err, cameraId);
+  }
 }
 
 
@@ -280,6 +329,19 @@ function connectLoop(){
     getLiveData();
   }
 }
+
+//-----------------------------------------------------------------------------
+//Error Handelers
+function HTTPerror(err, camera){
+  switch (err.code) {
+    case "ERR_INVALID_URL":
+      console.log("Bad URL Camera: "+camera);
+      break;
+    default:
+      console.log(err);
+  }
+}
+
 
 //-----------------------------------------------------------------------------
 //public functions

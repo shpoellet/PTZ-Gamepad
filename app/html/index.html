@@ -77,56 +77,56 @@
           <input type="checkbox"  id="SETTINGS_CAMERA_ENABLED_0">
         </div>
         <input type="text" id="SETTINGS_CAMERA_ADDRESS_0">
-        <input type="text" id="SETTINGS_CAMERA_PORT_0">
+        <input type="number" min=1 id="SETTINGS_CAMERA_PORT_0">
 
         <div class="settings_line_number">2</div>
         <div class="settings_checkbox">
           <input type="checkbox"  id="SETTINGS_CAMERA_ENABLED_1">
         </div>
         <input type="text" id="SETTINGS_CAMERA_ADDRESS_1">
-        <input type="text" id="SETTINGS_CAMERA_PORT_1">
+        <input type="number" min=1 id="SETTINGS_CAMERA_PORT_1">
 
         <div class="settings_line_number">3</div>
         <div class="settings_checkbox">
           <input type="checkbox"  id="SETTINGS_CAMERA_ENABLED_2">
         </div>
         <input type="text" id="SETTINGS_CAMERA_ADDRESS_2">
-        <input type="text" id="SETTINGS_CAMERA_PORT_2">
+        <input type="number" min=1 id="SETTINGS_CAMERA_PORT_2">
 
         <div class="settings_line_number">4</div>
         <div class="settings_checkbox">
           <input type="checkbox"  id="SETTINGS_CAMERA_ENABLED_3">
         </div>
         <input type="text" id="SETTINGS_CAMERA_ADDRESS_3">
-        <input type="text" id="SETTINGS_CAMERA_PORT_3">
+        <input type="number" min=1 id="SETTINGS_CAMERA_PORT_3">
 
         <div class="settings_line_number">5</div>
         <div class="settings_checkbox">
           <input type="checkbox"  id="SETTINGS_CAMERA_ENABLED_4">
         </div>
         <input type="text" id="SETTINGS_CAMERA_ADDRESS_4">
-        <input type="text" id="SETTINGS_CAMERA_PORT_4">
+        <input type="number" min=1 id="SETTINGS_CAMERA_PORT_4">
 
         <div class="settings_line_number">6</div>
         <div class="settings_checkbox">
           <input type="checkbox"  id="SETTINGS_CAMERA_ENABLED_5">
         </div>
         <input type="text" id="SETTINGS_CAMERA_ADDRESS_5">
-        <input type="text" id="SETTINGS_CAMERA_PORT_5">
+        <input type="number" min=1 id="SETTINGS_CAMERA_PORT_5">
 
         <div class="settings_line_number">7</div>
         <div class="settings_checkbox">
           <input type="checkbox"  id="SETTINGS_CAMERA_ENABLED_6">
         </div>
         <input type="text" id="SETTINGS_CAMERA_ADDRESS_6">
-        <input type="text" id="SETTINGS_CAMERA_PORT_6">
+        <input type="number" min=1 id="SETTINGS_CAMERA_PORT_6">
 
         <div class="settings_line_number">8</div>
         <div class="settings_checkbox">
           <input type="checkbox"  id="SETTINGS_CAMERA_ENABLED_7">
         </div>
         <input type="text" id="SETTINGS_CAMERA_ADDRESS_7">
-        <input type="text" id="SETTINGS_CAMERA_PORT_7">
+        <input type="number" min=1 id="SETTINGS_CAMERA_PORT_7">
 
 
 
@@ -248,14 +248,14 @@
         <div class="settings_line_number" id="MAP_RIGHT_FUNCTION">Pan/Tilt</div>
 
         <div class="settings_checkbox" id="AXE_SWAP_CONTAINER">
-          <input type="checkbox"  id="AXE_SWAP_CHECKBOX">
+          <input type="checkbox"  id="AXE_SWAP_CHECKBOX" onchange=ChangeAxeLabels()>
         </div>
 
         <div class="settings_checkbox" id="INVERT_TILT_CONTAINER">
           <input type="checkbox"  id="INVERT_TILT_CHECKBOX">
         </div>
 
-        <input type="text" id="THRESHOLD_INPUT">
+        <input type="number" min=0 max=0.5 step=.01 id="THRESHOLD_INPUT">
 
       </div>
 
