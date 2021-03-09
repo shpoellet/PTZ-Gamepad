@@ -69,7 +69,7 @@
       <div class="settings_grid" id="SETTINGS_GRID">
         <div class="settings_grid_title" id="SETTINGS_CAMERA_TITLE">Camera</div>
         <div class="settings_grid_title" id="SETTINGS_ACTIVE_TITLE">Enabled</div>
-        <div class="settings_grid_title" id="SETTINGS_ADDRESS_TITLE">Address</div>
+        <div class="settings_grid_title" id="SETTINGS_ADDRESS_TITLE">Address / Domain Name</div>
         <div class="settings_grid_title" id="SETTINGS_PORT_TITLE">Port</div>
 
         <div class="settings_line_number">1</div>
@@ -133,7 +133,7 @@
       </div>
 
       <div ID="MAP_BUTTON"  onclick="openMapPane()">Map Gamepad Buttons</div>
-
+      <div class="clear_settings_button" title="Clear Settings" onclick="ClearConfig()"></div>
     </div>
 
     <div class="pane settings_pane" id="PAD_MAP_PANE">
@@ -259,6 +259,7 @@
 
       </div>
 
+      <div class="clear_settings_button" title="Clear Settings" onclick="ClearMap()"></div>
     </div>
 
     <!-- You can also require other files to run in this process -->

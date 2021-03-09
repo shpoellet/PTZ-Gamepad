@@ -120,6 +120,30 @@ exports.removeButton = function(index){
   buttonMap[index].parameter = null;
 }
 
+exports.getMap = function(){
+  return buttonMap;
+}
+
+exports.setMap = function(newMap){
+  buttonMap = newMap;
+  UpdateGuiMap();
+}
+
+exports.clearMap = function(){
+  mapMode = false;
+  axeSwap = false;
+  invertTilt = false;
+  zeroThreshold = 0.04;
+
+  for (let i = 0; i < 17; i++) {
+    buttonMap[i]={
+      callBack: 0,
+      parameter: null
+    }
+  }
+  UpdateGuiMap();
+}
+
 //-----------------------------------------------------------------------------
 //from renderer process
 ipcMain.on('AxeAction', function(event, index, values){

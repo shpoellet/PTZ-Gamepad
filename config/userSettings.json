@@ -1,0 +1,77 @@
+{
+  "ButtonMap": [
+    {
+      "callBack": "8",
+      "parameter": 5
+    },
+    {
+      "callBack": "9",
+      "parameter": 15
+    },
+    {
+      "callBack": "0",
+      "parameter": null
+    },
+    {
+      "callBack": "0",
+      "parameter": null
+    },
+    {
+      "callBack": "0",
+      "parameter": null
+    },
+    {
+      "callBack": "0",
+      "parameter": null
+    },
+    {
+      "callBack": "0",
+      "parameter": null
+    },
+    {
+      "callBack": "0",
+      "parameter": null
+    },
+    {
+      "callBack": "0",
+      "parameter": null
+    },
+    {
+      "callBack": "0",
+      "parameter": null
+    },
+    {
+      "callBack": "0",
+      "parameter": null
+    },
+    {
+      "callBack": "0",
+      "parameter": null
+    },
+    {
+      "callBack": "0",
+      "parameter": null
+    },
+    {
+      "callBack": "0",
+      "parameter": null
+    },
+    {
+      "callBack": "0",
+      "parameter": null
+    },
+    {
+      "callBack": "0",
+      "parameter": null
+    },
+    {
+      "callBack": "0",
+      "parameter": null
+    }
+  ],
+  "PanSpeed": "27",
+  "ZoomSpeed": 50,
+  "ZeroThreshold": 0.5,
+  "AxeSwap": false,
+  "InvertTilt": false
+}

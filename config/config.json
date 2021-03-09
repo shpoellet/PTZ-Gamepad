@@ -1,0 +1,132 @@
+{
+  "Cameras": [
+    {
+      "enabled": true,
+      "connected": true,
+      "connectCount": 367,
+      "address": "pac001-gateway.gbpac.uni.edu",
+      "port": 81,
+      "pan": 50,
+      "tilt": 50,
+      "zoom": 51,
+      "sentPan": 50,
+      "sentTilt": 50,
+      "sentZoom": 51,
+      "liveValues": {
+        "autoFocus": true
+      }
+    },
+    {
+      "enabled": false,
+      "connected": false,
+      "connectCount": 0,
+      "address": "0.0.0.0",
+      "port": 80,
+      "pan": 50,
+      "tilt": 50,
+      "zoom": 50,
+      "sentPan": 50,
+      "sentTilt": 50,
+      "sentZoom": 50,
+      "liveValues": {
+        "autoFocus": false
+      }
+    },
+    {
+      "enabled": false,
+      "connected": false,
+      "connectCount": 0,
+      "address": "0.0.0.0",
+      "port": 80,
+      "pan": 50,
+      "tilt": 50,
+      "zoom": 50,
+      "sentPan": 50,
+      "sentTilt": 50,
+      "sentZoom": 50,
+      "liveValues": {
+        "autoFocus": false
+      }
+    },
+    {
+      "enabled": false,
+      "connected": false,
+      "connectCount": 0,
+      "address": "0.0.0.0",
+      "port": 80,
+      "pan": 50,
+      "tilt": 50,
+      "zoom": 50,
+      "sentPan": 50,
+      "sentTilt": 50,
+      "sentZoom": 50,
+      "liveValues": {
+        "autoFocus": false
+      }
+    },
+    {
+      "enabled": false,
+      "connected": false,
+      "connectCount": 0,
+      "address": "0.0.0.0",
+      "port": 80,
+      "pan": 50,
+      "tilt": 50,
+      "zoom": 50,
+      "sentPan": 50,
+      "sentTilt": 50,
+      "sentZoom": 50,
+      "liveValues": {
+        "autoFocus": false
+      }
+    },
+    {
+      "enabled": false,
+      "connected": false,
+      "connectCount": 0,
+      "address": "0.0.0.0",
+      "port": 80,
+      "pan": 50,
+      "tilt": 50,
+      "zoom": 50,
+      "sentPan": 50,
+      "sentTilt": 50,
+      "sentZoom": 50,
+      "liveValues": {
+        "autoFocus": false
+      }
+    },
+    {
+      "enabled": false,
+      "connected": false,
+      "connectCount": 0,
+      "address": "0.0.0.0",
+      "port": 80,
+      "pan": 50,
+      "tilt": 50,
+      "zoom": 50,
+      "sentPan": 50,
+      "sentTilt": 50,
+      "sentZoom": 50,
+      "liveValues": {
+        "autoFocus": false
+      }
+    },
+    {
+      "enabled": false,
+      "connected": false,
+      "connectCount": 0,
+      "address": "0.0.0.0",
+      "port": 80,
+      "pan": 50,
+      "tilt": 50,
+      "zoom": 50,
+      "sentPan": 50,
+      "sentTilt": 50,
+      "sentZoom": 50,
+      "liveValues": {
+        "autoFocus": false
+      }
+    }
+  ]
+}

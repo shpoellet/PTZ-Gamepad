@@ -131,6 +131,17 @@ function saveMap(){
           newMap[i].parameter = newValue2 - 1;
         }
         break;
+      case 8:
+      case 9:
+        let newValue8 = Math.floor(document.getElementById("BUTTON_VALUE_"+i).value);
+        if(newValue8 < 0){
+          newMap[i].parameter = 0;
+        } else if(newValue8 > 100){
+          newMap[i].parameter = 100;
+        } else{
+          newMap[i].parameter = newValue8;
+        }
+        break;
     }
   }
 
@@ -291,6 +302,14 @@ function FocusButton(direction){
   ipcRenderer.send('adjustFocus', direction);
 }
 
+function ClearMap(){
+  ipcRenderer.send('clearMap');
+}
+
+function ClearConfig(){
+  ipcRenderer.send('clearConfig');
+}
+
 //sliders
 
 function PTspeedSlider(value){
@@ -303,7 +322,7 @@ function ZoomSpeedSlider(value){
 
 function EnableButtonInput(index){
   let callBackID = document.getElementById("MAP_BUTTON_ACTION_"+index).value;
-  if(callBackID == 1 || callBackID == 2){
+  if(callBackID == 1 || callBackID == 2 || callBackID == 8 || callBackID == 9){
     document.getElementById("BUTTON_VALUE_"+index).value = 1;
     document.getElementById("BUTTON_VALUE_"+index).disabled = false;
   }
@@ -372,7 +391,7 @@ Gamepad.init(AxeAction, ButtonAction);
 //data passed from the main process
 //-----------------------------------------------------------------------------
 
-ipcRenderer.on('updateSettings', function(event, Cameras, Selected){
+ipcRenderer.on('updateSettings', function(event, Cameras, Selected, newMap){
   for (let i = 0; i < Cameras.length; i++) {
     document.getElementById("SETTINGS_CAMERA_ENABLED_"+i).checked = Cameras[i].enabled;
     document.getElementById("SETTINGS_CAMERA_ADDRESS_"+i).value = Cameras[i].address;
@@ -380,6 +399,7 @@ ipcRenderer.on('updateSettings', function(event, Cameras, Selected){
     displayCameraStatus(i, Cameras[i].enabled, Cameras[i].connected)
   }
   setSelectedCamera(Selected, Cameras[Selected]);
+
 })
 
 ipcRenderer.on('selectCamera', function(event, index, cameraValues){
@@ -427,6 +447,10 @@ ipcRenderer.on('UpdateGuiMap', function(event, buttonMap, axeSwap, invertTilt, z
     document.getElementById("MAP_BUTTON_ACTION_"+i).value = buttonMap[i].callBack;
     if(buttonMap[i].callBack == 1 || buttonMap[i].callBack == 2){
       document.getElementById("BUTTON_VALUE_"+i).value = +buttonMap[i].parameter + 1;
+      document.getElementById("BUTTON_VALUE_"+i).disabled = false;
+    }
+    else if(buttonMap[i].callBack == 8 || buttonMap[i].callBack == 9){
+      document.getElementById("BUTTON_VALUE_"+i).value = +buttonMap[i].parameter;
       document.getElementById("BUTTON_VALUE_"+i).disabled = false;
     }
     else{

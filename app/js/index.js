@@ -22,7 +22,7 @@ for (let i = 0; i < 17; i++) {
 }
 document.getElementById("BUTTONS_MAP_GRID").innerHTML=inner_html;
 
-var action_options = ["No Action", "Select Camera", "Recall Preset", "Auto Focus", "Manual Focus", "Focus Near", "Focus Far", "One Touch Auto Focus"];
+var action_options = ["No Action", "Select Camera", "Recall Preset", "Auto Focus", "Manual Focus", "Focus Near", "Focus Far", "One Touch Auto Focus", "Constant Zoom In", "Constant Zoom Out"];
 for(let i = 0; i < 17; i++){
 
 
@@ -35,3 +35,5 @@ for(let i = 0; i < 17; i++){
       sel.appendChild(opt);
   }
 }
+
+// document.getElementById("MAP_BUTTON_ACTION_1").value = 3;

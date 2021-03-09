@@ -15,8 +15,8 @@ module.exports = class Camera {
     this.connectCount = 0;
     // this.address = null;
     // this.port = 80;
-    this.address = 'pac001-gateway.gbpac.uni.edu';
-    this.port = 82;
+    this.address = '0.0.0.0';
+    this.port = 80;
 
     this.pan = 50;
     this.tilt  = 50;

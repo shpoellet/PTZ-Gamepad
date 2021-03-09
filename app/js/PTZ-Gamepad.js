@@ -3,11 +3,14 @@ const {ipcMain} = require('electron');
 
 const http = require('http');
 
+const fs = require('fs')
 
 
 const Camera = require('./Camera.js');
 
 const Gamepad = require('./Gamepad.js');
+
+const saveDir = 'config';
 
 var cameraCount = 8;
 
@@ -24,6 +27,8 @@ var mappedZoom = 50;
 
 var PTspeed = 50;
 var ZoomSpeed = 50;
+
+var constantZoom = false;
 
 var packetCount = 1;
 
@@ -147,7 +152,12 @@ function processPT(pan, tilt){
 }
 
 function processZoom(zoom){
-  Cameras[selectedCamera].zoom  = Math.round(50 + (( (zoom *(ZoomSpeed/100)) /100)*49));
+    Cameras[selectedCamera].zoom  = Math.round(50 + (( (zoom *(ZoomSpeed/100)) /100)*49));
+    console.log(zoom)
+}
+
+function setConstantZoom(zoom){
+  Cameras[selectedCamera].zoom = Math.round(50 + (zoom/100)*49);
 }
 
 
@@ -331,6 +341,75 @@ function connectLoop(){
 }
 
 //-----------------------------------------------------------------------------
+//Save File
+function saveConfigToFile(){
+  //check if the save directory exists, if not create it
+  if (!fs.existsSync(saveDir)){
+    fs.mkdirSync(saveDir);
+  }
+
+  //create data object
+  let saveData = {
+    Cameras: Cameras
+  };
+
+  //write data to file
+  fs.writeFile(saveDir+'/config.json', JSON.stringify(saveData, null, 2), err => {
+    if (err) {}
+    //file written successfully
+  })
+}
+
+function saveUserToFile(){
+  //check if the save directory exists, if not create it
+  if (!fs.existsSync(saveDir)){
+    fs.mkdirSync(saveDir);
+  }
+  let saveData = {
+    ButtonMap: Gamepad.getMap(),
+    PanSpeed: PTspeed,
+    ZoomSpeed: ZoomSpeed,
+    ZeroThreshold: Gamepad.getThreshold(),
+    AxeSwap: Gamepad.getAxeSwap(),
+    InvertTilt: Gamepad.getTiltInvert()
+  };
+
+  fs.writeFile(saveDir+'/userSettings.json', JSON.stringify(saveData, null, 2), err => {
+    if (err) {}
+    //file written successfully
+  })
+}
+
+function saveAllToFile(){
+  saveConfigToFile();
+  saveUserToFile();
+}
+
+function loadConfig(){
+  try{
+    let rawData = fs.readFileSync(saveDir+'/config.json');
+    let parsedData = JSON.parse(rawData);
+    Cameras = parsedData.Cameras;
+  } catch(error){
+    console.log("Unable to load Config File");
+  }
+
+  try{
+    let rawData = fs.readFileSync(saveDir+'/userSettings.json');
+    let parsedData = JSON.parse(rawData);
+    Gamepad.setThreshold(parsedData.ZeroThreshold);
+    Gamepad.setAxeSwap(parsedData.AxeSwap);
+    Gamepad.setTiltInvert(parsedData.InvertTilt);
+    Gamepad.setMap(parsedData.ButtonMap);
+    PTspeed = parsedData.PanSpeed;
+    ZoomSpeed = parsedData.ZoomSpeed;
+  } catch(error){
+    console.log("Unable to load User Settings File");
+  }
+
+}
+
+//-----------------------------------------------------------------------------
 //Error Handelers
 function HTTPerror(err, camera){
   switch (err.code) {
@@ -348,6 +427,7 @@ function HTTPerror(err, camera){
 exports.init = function(item){
   Window = item;
   Gamepad.init(Window, processPT, processZoom);
+  loadConfig();
   GUI_updateSettings();
   setInterval(PTZloop, 130);
   setInterval(connectLoop, 1000);
@@ -388,6 +468,12 @@ Gamepad.attachButtonCallback(7,'Touch Focus', false,
     function(index){setOTAF();  Window.webContents.send('blinkOTAF');},
     null);
 
+Gamepad.attachButtonCallback(8,'Constant Zoom In', true,
+    function(index){setConstantZoom(index)}, null);
+
+Gamepad.attachButtonCallback(9,'Constant Zoom Out', true,
+    function(index){setConstantZoom(-index)}, null);
+
 //-----------------------------------------------------------------------------
 //GUI Commands
 //Commands that are sent to the rendere process
@@ -401,8 +487,7 @@ function GUI_connectCamera(index){
 }
 
 function GUI_updateSettings(){
-  Window.webContents.send('updateSettings', Cameras, selectedCamera,
-                            );
+  Window.webContents.send('updateSettings', Cameras, selectedCamera, Gamepad.getMap());
 }
 
 function GUI_displayLiveValues(){
@@ -427,6 +512,7 @@ ipcMain.on('saveSettings', function(event, values){
     Cameras[i].port = values[i].port;
   }
   GUI_updateSettings();
+  saveAllToFile();
 })
 
 ipcMain.on('recallPreset', function(event, index){
@@ -456,10 +542,26 @@ ipcMain.on('adjustFocus', function(event, direction){
 
 ipcMain.on('setPTspeed', function(event, value){
   PTspeed=value;
+  saveUserToFile();
 })
 
 ipcMain.on('setZoomSpeed', function(event, value){
   ZoomSpeed = value;
+  saveUserToFile();
+})
+
+ipcMain.on('clearMap', function(event){
+  Gamepad.clearMap();
+})
+
+ipcMain.on('clearConfig', function(event){
+  for (var i = 0; i < cameraCount; i++) {
+    Cameras[i].enabled = false;
+    Cameras[i].connected = false;
+    Cameras[i].address = '0.0.0.0';
+    Cameras[i].port = 80;
+  }
+  GUI_updateSettings();
 })
 
 // ipcMain.on('PanTilt', function(event, pan, tilt){

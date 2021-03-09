@@ -471,3 +471,17 @@ path.active {
   grid-column: 8;
   grid-row: 2;
 }
+
+.clear_settings_button{
+  background-image: url("../graphics/clear-30x30.png");
+  position: absolute;
+  width: 30px;
+  height: 30px;
+  right: 5px;
+  bottom: 5px;
+  cursor: pointer;
+}
+
+.clear_settings_button:hover{
+    transform: rotate(22.5deg);
+}
