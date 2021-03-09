@@ -1,4 +1,4 @@
-// const {ipcRenderer} = require('electron');
+const {ipcRenderer} = require('electron');
 
 // require("../js/gamecontroller.js");
 
@@ -17,6 +17,7 @@ var invertTilt = false;
 
 var mapMode = false;
 //local functions
+
 
 function displayCameraStatus(index, enabled, connected){
   //displays the status of the cameras
@@ -94,7 +95,7 @@ function saveSettings(){
     newValues[i].port = newPort;
     console.log(newValues[i].address.length)
   }
-  window.ipcRenderer.send('saveSettings', newValues);
+  ipcRenderer.send('saveSettings', newValues);
   closeSettingsPane();
 }
 
@@ -151,7 +152,7 @@ function saveMap(){
   } else if(newThreshold > 0.5){
     newThreshold = 0.5;
   }
-  window.ipcRenderer.send('saveMap', newMap,
+  ipcRenderer.send('saveMap', newMap,
                         document.getElementById("AXE_SWAP_CHECKBOX").checked,
                         document.getElementById("INVERT_TILT_CHECKBOX").checked,
                         newThreshold);
@@ -268,15 +269,15 @@ function closeMapPane(){
 
 //Other Button Clicks
 function CameraSelectButton(index){
-  window.ipcRenderer.send('selectCamera', index);
+  ipcRenderer.send('selectCamera', index);
 }
 
 function PresetSelectButton(index){
   if(recordMode){
-    window.ipcRenderer.send('recordPreset', index);
+    ipcRenderer.send('recordPreset', index);
     setRecordMode(false);
   } else{
-    window.ipcRenderer.send('recallPreset', index);
+    ipcRenderer.send('recallPreset', index);
   }
 }
 
@@ -289,39 +290,39 @@ function RecordButton(){
 }
 
 function AutoFocusButton(){
-  window.ipcRenderer.send('setAutoFocus');
+  ipcRenderer.send('setAutoFocus');
 }
 
 function OneTouchButton(){
-  window.ipcRenderer.send('setTouchFocus');
+  ipcRenderer.send('setTouchFocus');
 
 }
 
 function ManaulFocusButton(){
-  window.ipcRenderer.send('setManualFocus');
+  ipcRenderer.send('setManualFocus');
 
 }
 
 function FocusButton(direction){
-  window.ipcRenderer.send('adjustFocus', direction);
+  ipcRenderer.send('adjustFocus', direction);
 }
 
 function ClearMap(){
-  window.ipcRenderer.send('clearMap');
+  ipcRenderer.send('clearMap');
 }
 
 function ClearConfig(){
-  window.ipcRenderer.send('clearConfig');
+  ipcRenderer.send('clearConfig');
 }
 
 //sliders
 
 function PTspeedSlider(value){
-  window.ipcRenderer.send('setPTspeed', value);
+  ipcRenderer.send('setPTspeed', value);
 }
 
 function ZoomSpeedSlider(value){
-  window.ipcRenderer.send('setZoomSpeed', value);
+  ipcRenderer.send('setZoomSpeed', value);
 }
 
 function EnableButtonInput(index){
@@ -370,7 +371,7 @@ function AxeAction(index, axeValues){
     }
   }else{
     //received data from the Gamepad interface and send it to the main process
-    window.ipcRenderer.send('AxeAction', index, axeValues);
+    ipcRenderer.send('AxeAction', index, axeValues);
   }
 }
 
@@ -380,7 +381,7 @@ function ButtonAction(index, value){
     document.getElementById('button-'+index).classList.toggle('active', value);
   }else{
     //received data from the Gamepad interface and send it to the main process
-    window.ipcRenderer.send('ButtonAction', index, value);
+    ipcRenderer.send('ButtonAction', index, value);
   }
 }
 
@@ -395,7 +396,7 @@ Gamepad.init(AxeAction, ButtonAction);
 //data passed from the main process
 //-----------------------------------------------------------------------------
 
-window.ipcRenderer.on('updateSettings', function(event, Cameras, Selected, newMap){
+ipcRenderer.on('updateSettings', function(event, Cameras, Selected, newMap){
   for (let i = 0; i < Cameras.length; i++) {
     document.getElementById("SETTINGS_CAMERA_ENABLED_"+i).checked = Cameras[i].enabled;
     document.getElementById("SETTINGS_CAMERA_ADDRESS_"+i).value = Cameras[i].address;
@@ -406,47 +407,47 @@ window.ipcRenderer.on('updateSettings', function(event, Cameras, Selected, newMa
 
 })
 
-window.ipcRenderer.on('selectCamera', function(event, index, cameraValues){
+ipcRenderer.on('selectCamera', function(event, index, cameraValues){
   setSelectedCamera(index, cameraValues);
 })
 
-window.ipcRenderer.on('connectCamera', function(event, index, cameraValues){
+ipcRenderer.on('connectCamera', function(event, index, cameraValues){
   displayCameraStatus(index, cameraValues.enabled, cameraValues.connected);
   if(index == selectedCamera){
     setSelectedCamera(index, cameraValues);
   }
 })
 
-window.ipcRenderer.on('displayLiveValues', function(event, liveValues){
+ipcRenderer.on('displayLiveValues', function(event, liveValues){
   displayCameraValues(liveValues);
 })
 
-window.ipcRenderer.on('drawPT', function(event, values){
+ipcRenderer.on('drawPT', function(event, values){
   pan = values[0];
   tilt = values[1];
   drawPT();
 })
 
-window.ipcRenderer.on('drawZoom', function(event, value){
+ipcRenderer.on('drawZoom', function(event, value){
   zoom = value;
   drawZoom();
 })
 
-window.ipcRenderer.on('blinkPreset', function(event, index, recordMode){blinkPreset(index, recordMode);});
+ipcRenderer.on('blinkPreset', function(event, index, recordMode){blinkPreset(index, recordMode);});
 
-window.ipcRenderer.on('blinkAF', blinkAF);
+ipcRenderer.on('blinkAF', blinkAF);
 
-window.ipcRenderer.on('blinkMF', blinkMF);
+ipcRenderer.on('blinkMF', blinkMF);
 
-window.ipcRenderer.on('blinkMFnear', function(event, value){blinkMFnear(value);});
+ipcRenderer.on('blinkMFnear', function(event, value){blinkMFnear(value);});
 
-window.ipcRenderer.on('blinkMFfar', function(event, value){blinkMFfar(value);});
+ipcRenderer.on('blinkMFfar', function(event, value){blinkMFfar(value);});
 
-window.ipcRenderer.on('blinkOTAF', blinkOTAF);
+ipcRenderer.on('blinkOTAF', blinkOTAF);
 
-window.ipcRenderer.on('setThreshold', function(event, value){setThreshold(value);});
+ipcRenderer.on('setThreshold', function(event, value){setThreshold(value);});
 
-window.ipcRenderer.on('UpdateGuiMap', function(event, buttonMap, axeSwap, invertTilt, zeroThreshold){
+ipcRenderer.on('UpdateGuiMap', function(event, buttonMap, axeSwap, invertTilt, zeroThreshold){
   for (let i = 0; i < buttonMap.length; i++) {
     document.getElementById("MAP_BUTTON_ACTION_"+i).value = buttonMap[i].callBack;
     if(buttonMap[i].callBack == 1 || buttonMap[i].callBack == 2){

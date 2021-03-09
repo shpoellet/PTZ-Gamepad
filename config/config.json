@@ -8,10 +8,10 @@
       "port": 81,
       "pan": 50,
       "tilt": 50,
-      "zoom": 51,
+      "zoom": 50,
       "sentPan": 50,
       "sentTilt": 50,
-      "sentZoom": 51,
+      "sentZoom": 50,
       "liveValues": {
         "autoFocus": true
       }

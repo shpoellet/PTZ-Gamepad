@@ -347,6 +347,11 @@ function connectLoop(){
 function saveConfigToFile(){
   //check if the save directory exists, if not create it
   if (!fs.existsSync(saveDir)){
+    // try{
+    //   fs.mkdirSync(saveDir);
+    // }catch(error){
+    //   console.log("Unable to create save directory");
+    // }
     fs.mkdirSync(saveDir);
   }
 
@@ -365,7 +370,11 @@ function saveConfigToFile(){
 function saveUserToFile(){
   //check if the save directory exists, if not create it
   if (!fs.existsSync(saveDir)){
-    fs.mkdirSync(saveDir);
+    try{
+      fs.mkdirSync(saveDir);
+    }catch(error){
+      console.log("Unable to create save directory");
+    }
   }
   let saveData = {
     ButtonMap: Gamepad.getMap(),
