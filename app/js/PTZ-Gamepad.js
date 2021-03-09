@@ -8,7 +8,7 @@ const fs = require('fs')
 
 const Camera = require('./Camera.js');
 
-const Gamepad = require('./Gamepad.js');
+const Gamepad = require('./gamepad.js');
 
 const saveDir = 'config';
 
