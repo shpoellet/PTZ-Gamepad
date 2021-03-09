@@ -1,16 +1,12 @@
 {
   "ButtonMap": [
     {
-      "callBack": "8",
-      "parameter": 5
+      "callBack": "2",
+      "parameter": 0
     },
     {
-      "callBack": "9",
-      "parameter": 15
-    },
-    {
-      "callBack": "0",
-      "parameter": null
+      "callBack": "2",
+      "parameter": 1
     },
     {
       "callBack": "0",
@@ -66,12 +62,16 @@
     },
     {
       "callBack": "0",
+      "parameter": null
+    },
+    {
+      "callBack": "10",
       "parameter": null
     }
   ],
   "PanSpeed": "27",
   "ZoomSpeed": 50,
-  "ZeroThreshold": 0.5,
+  "ZeroThreshold": 0.04,
   "AxeSwap": false,
   "InvertTilt": false
 }

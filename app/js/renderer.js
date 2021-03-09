@@ -194,8 +194,13 @@ function drawZoom(){
 
 
 //flash buttons
-function blinkPreset(index){
-  document.getElementById("PRESET_SELECT_"+index).style.backgroundColor = '#909090';
+function blinkPreset(index, recordMode){
+  if(recordMode){
+    document.getElementById("PRESET_SELECT_"+index).style.backgroundColor = '#CD6155';
+  }
+  else{
+    document.getElementById("PRESET_SELECT_"+index).style.backgroundColor = '#909090';
+  }
   setTimeout(function(){
     document.getElementById("PRESET_SELECT_"+index).style.backgroundColor = '';},250);
 }
@@ -428,7 +433,7 @@ ipcRenderer.on('drawZoom', function(event, value){
   drawZoom();
 })
 
-ipcRenderer.on('blinkPreset', function(event, index){blinkPreset(index);});
+ipcRenderer.on('blinkPreset', function(event, index, recordMode){blinkPreset(index, recordMode);});
 
 ipcRenderer.on('blinkAF', blinkAF);
 

@@ -22,7 +22,7 @@ for (let i = 0; i < 17; i++) {
 }
 document.getElementById("BUTTONS_MAP_GRID").innerHTML=inner_html;
 
-var action_options = ["No Action", "Select Camera", "Recall Preset", "Auto Focus", "Manual Focus", "Focus Near", "Focus Far", "One Touch Auto Focus", "Constant Zoom In", "Constant Zoom Out"];
+var action_options = ["No Action", "Select Camera", "Recall Preset", "Auto Focus", "Manual Focus", "Focus Near", "Focus Far", "One Touch Auto Focus", "Constant Zoom In", "Constant Zoom Out", "Record Preset"];
 for(let i = 0; i < 17; i++){
 
 

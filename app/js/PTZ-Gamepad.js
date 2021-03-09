@@ -30,6 +30,8 @@ var ZoomSpeed = 50;
 
 var constantZoom = false;
 
+var presetRecordMode = false;
+
 var packetCount = 1;
 
 //-----------------------------------------------------------------------------
@@ -440,8 +442,16 @@ Gamepad.attachButtonCallback(1,'Select Camera', true,
     null);
 
 Gamepad.attachButtonCallback(2,'Recall Preset', true,
-    function(index){recallPreset(index);
-                            Window.webContents.send('blinkPreset', index);},
+    function(index){
+      if(!presetRecordMode){
+        recallPreset(index);
+        Window.webContents.send('blinkPreset', index, false);
+      }
+      else{
+        storePreset(index);
+        Window.webContents.send('blinkPreset', index, true);
+      }
+    },
     null);
 
 Gamepad.attachButtonCallback(3,'Auto Focus', false,
@@ -473,6 +483,9 @@ Gamepad.attachButtonCallback(8,'Constant Zoom In', true,
 
 Gamepad.attachButtonCallback(9,'Constant Zoom Out', true,
     function(index){setConstantZoom(-index)}, null);
+
+Gamepad.attachButtonCallback(10,'Record Mode', false,
+    function(){presetRecordMode = true}, function(){presetRecordMode = false});
 
 //-----------------------------------------------------------------------------
 //GUI Commands
