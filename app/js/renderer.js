@@ -473,3 +473,7 @@ window.ipcRenderer.on('UpdateGuiMap', function(event, buttonMap, axeSwap, invert
   document.getElementById("INVERT_TILT_CHECKBOX").checked = invertTilt;
   document.getElementById("THRESHOLD_INPUT").value = zeroThreshold;
 })
+
+window.ipcRenderer.on('PTslider', function(event, value){document.getElementById("PTslider").value = value});
+
+window.ipcRenderer.on('ZoomSlider', function(event, value){document.getElementById("ZoomSlider").value = value});

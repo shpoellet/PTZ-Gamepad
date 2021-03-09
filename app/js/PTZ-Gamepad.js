@@ -453,7 +453,9 @@ function loadConfig(){
     Gamepad.setTiltInvert(parsedData.InvertTilt);
     Gamepad.setMap(parsedData.ButtonMap);
     PTspeed = parsedData.PanSpeed;
+    Window.webContents.send('PTslider', PTspeed);
     ZoomSpeed = parsedData.ZoomSpeed;
+    Window.webContents.send('ZoomSlider', ZoomSpeed);
   } catch(error){
     console.log("Unable to load User Settings File");
   }
@@ -555,8 +557,10 @@ function GUI_updateSettings(){
 function GUI_displayLiveValues(){
   Window.webContents.send('displayLiveValues',
                                       Cameras[selectedCamera].liveValues);
-  console.log(Cameras[selectedCamera].liveValues)
+  // console.log(Cameras[selectedCamera].liveValues)
 }
+
+
 
 //-----------------------------------------------------------------------------
 //from GUI
