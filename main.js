@@ -3,17 +3,27 @@ const electron = require('electron')
 const {app, BrowserWindow} = electron
 const path = require('path')
 let mainWindow;
+
+var windowWidth = 720;
+var windowHeight = 740;
+
+const OS = process.platform;
+if(OS == "darwin"){
+  windowWidth = 707;
+  windowHeight = 665;
+}
+
 function createWindow () {
   // Create the browser window.
   mainWindow = new BrowserWindow({
-    width: 720,
-    height: 740,
-    resizeable: false,
+    width: windowWidth,
+    height: windowHeight,
+    useContentSize: true,
     webPreferences: {
-    nodeIntegration: true,
-    contextIsolation: false,
-    preload: path.join(__dirname, './app/js/preload.js')
-  },
+      nodeIntegration: true,
+      contextIsolation: false,
+      preload: path.join(__dirname, './app/js/preload.js')
+      },
     show: false
   })
 
@@ -26,7 +36,7 @@ function createWindow () {
 
   mainWindow.once('ready-to-show', function (){
     mainWindow.show();
-    mainWindow.setResizable(false);
+    // mainWindow.setResizable(false);
     runMain();
   })
 

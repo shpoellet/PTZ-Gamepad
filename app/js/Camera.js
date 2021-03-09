@@ -12,7 +12,7 @@ module.exports = class Camera {
   constructor(){
     this.enabled = false;
     this.connected = false;
-    this.connectCount = 0;
+    this.connectCount = -3;
     // this.address = null;
     // this.port = 80;
     this.address = '0.0.0.0';

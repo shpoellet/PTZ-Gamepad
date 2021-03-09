@@ -5,12 +5,15 @@ const http = require('http');
 
 const fs = require('fs')
 
+const path = require('path')
 
 const Camera = require('./Camera.js');
 
 const Gamepad = require('./gamepad.js');
 
-const saveDir = 'config';
+const appName = 'PTZ-Gamepad';
+
+var saveDir;
 
 var cameraCount = 8;
 
@@ -155,7 +158,6 @@ function processPT(pan, tilt){
 
 function processZoom(zoom){
     Cameras[selectedCamera].zoom  = Math.round(50 + (( (zoom *(ZoomSpeed/100)) /100)*49));
-    console.log(zoom)
 }
 
 function setConstantZoom(zoom){
@@ -344,7 +346,34 @@ function connectLoop(){
 
 //-----------------------------------------------------------------------------
 //Save File
+
+function getAppDataPath() {
+  switch (process.platform) {
+    case "darwin": {
+      saveDir = path.join(process.env.HOME, "Library", "Application Support", appName);
+      break;
+    }
+    case "win32": {
+      saveDir = path.join(process.env.APPDATA, appName);
+      break;
+    }
+    case "linux": {
+      saveDir = path.join(process.env.HOME, "."+appName);
+      break;
+    }
+    default: {
+      console.log("Can Not Save Unsupported platform!");
+    }
+  }
+  console.log(saveDir);
+}
+
+
 function saveConfigToFile(){
+  if(saveDir == null){
+    getAppDataPath();
+
+  }
   //check if the save directory exists, if not create it
   if (!fs.existsSync(saveDir)){
     // try{
@@ -368,6 +397,9 @@ function saveConfigToFile(){
 }
 
 function saveUserToFile(){
+  if(saveDir == null){
+    getAppDataPath();
+  }
   //check if the save directory exists, if not create it
   if (!fs.existsSync(saveDir)){
     try{
@@ -397,10 +429,18 @@ function saveAllToFile(){
 }
 
 function loadConfig(){
+  if(saveDir == null){
+    getAppDataPath();
+  }
+
   try{
     let rawData = fs.readFileSync(saveDir+'/config.json');
     let parsedData = JSON.parse(rawData);
     Cameras = parsedData.Cameras;
+    for (let i = 0; i < cameraCount; i++) {
+      Cameras[i].connected = false;
+      Cameras[i].connectCount = -3;
+    }
   } catch(error){
     console.log("Unable to load Config File");
   }
@@ -498,7 +538,7 @@ Gamepad.attachButtonCallback(10,'Record Mode', false,
 
 //-----------------------------------------------------------------------------
 //GUI Commands
-//Commands that are sent to the rendere process
+//Commands that are sent to the renderer process
 function GUI_selectCamera(){
   Window.webContents.send('selectCamera', selectedCamera,
                                                 Cameras[selectedCamera]);
@@ -529,8 +569,9 @@ ipcMain.on('selectCamera', function(event, index){
 ipcMain.on('saveSettings', function(event, values){
   for (var i = 0; i < cameraCount; i++) {
     Cameras[i].enabled = values[i].enabled;
-    if(Cameras[i].enabled == false){Cameras[i].connected = false}
     Cameras[i].address = values[i].address;
+    if(Cameras[i].address == '0.0.0.0'){Cameras[i].enabled = false}
+    if(Cameras[i].enabled == false){Cameras[i].connected = false}
     Cameras[i].port = values[i].port;
   }
   GUI_updateSettings();
