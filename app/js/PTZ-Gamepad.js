@@ -536,7 +536,10 @@ Gamepad.attachButtonCallback(9,'Constant Zoom Out', true,
     function(index){setConstantZoom(-index)}, null);
 
 Gamepad.attachButtonCallback(10,'Record Mode', false,
-    function(){presetRecordMode = true}, function(){presetRecordMode = false});
+    function(){presetRecordMode = true;
+      Window.webContents.send('setRecordMode', true);},
+    function(){presetRecordMode = false
+      Window.webContents.send('setRecordMode', false)});
 
 //-----------------------------------------------------------------------------
 //GUI Commands
@@ -588,7 +591,6 @@ ipcMain.on('recallPreset', function(event, index){
 
 ipcMain.on('recordPreset', function(event, index){
   storePreset(index);
-  console.log("Record Preset" + index);
 })
 
 ipcMain.on('setAutoFocus', function(event){
@@ -629,6 +631,10 @@ ipcMain.on('clearConfig', function(event){
     Cameras[i].port = 80;
   }
   GUI_updateSettings();
+})
+
+ipcMain.on('cancelRecord', function(event){
+  presetRecordMode = false;
 })
 
 // ipcMain.on('PanTilt', function(event, pan, tilt){

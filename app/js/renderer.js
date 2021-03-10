@@ -283,6 +283,7 @@ function PresetSelectButton(index){
 function RecordButton(){
   if(recordMode){
     setRecordMode(false);
+    window.ipcRenderer.send('cancelRecord');
   } else{
     setRecordMode(true);
   }
@@ -477,3 +478,5 @@ window.ipcRenderer.on('UpdateGuiMap', function(event, buttonMap, axeSwap, invert
 window.ipcRenderer.on('PTslider', function(event, value){document.getElementById("PTslider").value = value});
 
 window.ipcRenderer.on('ZoomSlider', function(event, value){document.getElementById("ZoomSlider").value = value});
+
+window.ipcRenderer.on('setRecordMode', function(event, value){setRecordMode(value)});
