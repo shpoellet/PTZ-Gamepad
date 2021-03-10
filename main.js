@@ -4,14 +4,14 @@ const {app, BrowserWindow} = electron
 const path = require('path')
 let mainWindow;
 
-var windowWidth = 720;
-var windowHeight = 740;
+var windowWidth = 708;
+var windowHeight = 665;
 
 const OS = process.platform;
-if(OS == "darwin"){
-  windowWidth = 707;
-  windowHeight = 665;
-}
+// if(OS == "darwin"){
+//   windowWidth = 707;
+//   windowHeight = 665;
+// }
 
 function createWindow () {
   // Create the browser window.
@@ -36,7 +36,7 @@ function createWindow () {
 
   mainWindow.once('ready-to-show', function (){
     mainWindow.show();
-    // mainWindow.setResizable(false);
+    mainWindow.setResizable(false);
     runMain();
   })
 
